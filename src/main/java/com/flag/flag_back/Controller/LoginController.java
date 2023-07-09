@@ -18,13 +18,13 @@ public class LoginController {
     @Autowired
     private final UserService userService;
 
-    @GetMapping("user/login")//GetMapping : "/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
+    @GetMapping("/user/login")//GetMapping : "user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
     public String login() {
-        return "user/login";
+        return "login";
     }
 
-    @PostMapping("user/login")
-    public String loginId(@ModelAttribute UserDto userDto) {//PostMapping: "/login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
+    @PostMapping("/user/login")
+    public String loginId(@ModelAttribute UserDto userDto) {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
 
         userService.login(userDto);
 

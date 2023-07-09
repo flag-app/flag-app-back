@@ -1,12 +1,10 @@
 package com.flag.flag_back.Model;
 
-import ch.qos.logback.core.net.SMTPAppenderBase;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+
+@NoArgsConstructor
 
 @Data
 @Table(name = "UserTB")
@@ -31,4 +29,5 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
 }
