@@ -38,6 +38,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	testCompileOnly 'junit:junit:4.13'
 	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 test {
