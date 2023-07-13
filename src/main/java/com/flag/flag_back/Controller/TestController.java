@@ -16,5 +16,5 @@ public class TestController {
     @GetMapping("/test/db")
     public String testDB() {
         return userJpaRepository.findById(1L).get().getName();
-    }
+    }//숫자 1에 long타입
 }

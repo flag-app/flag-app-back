@@ -1,10 +1,10 @@
 package com.flag.flag_back.Model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+
+@NoArgsConstructor
 
 @Data
 @Table(name = "UserTB")
@@ -21,4 +21,13 @@ public class User {
     @Column(name = "userEmail")
     private String email;
     private String password;
+
+    @Builder
+    public User(Long id,String name, String email, String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
 }

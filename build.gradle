@@ -32,8 +32,16 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
+//	junit설정
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testCompileOnly 'junit:junit:4.13'
+	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
