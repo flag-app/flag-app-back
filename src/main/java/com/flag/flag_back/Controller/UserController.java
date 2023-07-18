@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public UserRes create(@RequestBody UserDto request) {  //@Valid이거 왜 문제 생기는지 모르겟음..
+    public UserRes create(@RequestBody UserDto request) {  //@Valid 문제 있음.
 
         User user = new User();
         user.setName(request.getName());
