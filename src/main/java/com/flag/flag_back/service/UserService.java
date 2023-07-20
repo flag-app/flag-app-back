@@ -2,7 +2,6 @@ package com.flag.flag_back.service;
 
 import com.flag.flag_back.Dto.UserDto;
 import com.flag.flag_back.Model.User;
-import com.flag.flag_back.Repository.UserRepo;
 import com.flag.flag_back.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import java.util.List;
 @Service
 public class UserService {
     private UserRepository userRepository;
-    private UserRepo userRepo;
 
     @Transactional
     public Long saveUser(UserDto userDto) {
@@ -40,18 +38,18 @@ public class UserService {
     public Long join(User user) {
 
         validateDuplicateMember(user); //중복 회원 검증
-        userRepo.save(user);
+        userRepository.save(user);
         return user.getId();
     }
 
     private void validateDuplicateMember(User user) {
-        List<User> findMembers = userRepo.findByName(user.getName());
+        List<User> findMembers = userRepository.findUserEntityByName(user.getName());
         if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
     public UserDto findById(Long id) {
-        return userRepo.findOne(id);
+        return userRepository.findUserEntityById(id);
     }
 }
