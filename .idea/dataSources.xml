@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://flag-db.cbutsy3iam3a.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="@flag-db.cbutsy3iam3a.ap-northeast-2.rds.amazonaws.com" uuid="ffe9341a-b325-4aa9-985d-6b1b8e65ec71">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://flag-db.cbutsy3iam3a.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
