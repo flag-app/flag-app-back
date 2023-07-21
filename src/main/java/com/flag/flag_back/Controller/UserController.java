@@ -8,15 +8,17 @@ import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("user")
 public class UserController {
     private final HttpSession httpSession; // 접속했는지 안했는지 확인
     @Autowired
@@ -24,28 +26,59 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
-    @GetMapping("/login")//GetMapping : "/user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
-    public String login() {
+    @GetMapping("login") //GetMapping : "/user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
+    public String login(Model model) {
+        model.addAttribute("data", "hello!!!");
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("login")
     public String loginId(@ModelAttribute UserDto userDto) {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
         userService.login(userDto);
         return "redirect:/";
-
     }
 
-    @PostMapping("/join")
+    @GetMapping("/join")
+    public String create(Model model) {
+        model.addAttribute("userInfo", new UserInfo());
+        return "createUser";
+    }
+
+    /*@PostMapping("/join")
     public UserRes create(@RequestBody @Valid UserInfo request) {
 
+        System.out.println("여기까지 들어옴");
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
 
+        System.out.println("여까지도 성공~");
+
         Long id = userService.join(user);
+        System.out.println(userService.findById(id));
         return new UserRes(id);
+    }*/
+
+    @PostMapping("/join")
+    public String create(@Valid UserInfo request, BindingResult result) {
+
+        if (result.hasErrors()) {
+            System.out.println("에러 발생!");
+            return "redirect:/";
+        }
+
+        System.out.println("여기까지 들어옴");
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+
+        System.out.println("여까지도 성공~");
+
+        Long id = userService.join(user);
+        System.out.println(userService.findById(id));
+        return "redirect:/";
     }
 
     @PostMapping("/logout")

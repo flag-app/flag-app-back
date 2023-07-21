@@ -1,16 +1,10 @@
-<!doctype html>
-<html lang="ko">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>로그인</title>
+    <title>로그인 페이지</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-로그인입니다.
-
-<form method="post" action="/user/login">
-    ID :<input type="text" name="id"><br>
-    PASSWORD :<input type="text" name="password"><br>
-    <button type="submit">제출</button>
-</form>
+<p th:text="'안녕 ' + ${data}" >안녕하세요. 손님</p>
 </body>
 </html>
