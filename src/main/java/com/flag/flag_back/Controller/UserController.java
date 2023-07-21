@@ -1,6 +1,9 @@
 package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Dto.UserDto;
+import com.flag.flag_back.Dto.UserInfo;
+import com.flag.flag_back.Dto.UserRes;
+import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,18 @@ public class UserController {
 
     }
 
+    @PostMapping("/join")
+    public UserRes create(@RequestBody UserDto request) {  //@Valid 문제 있음.
+
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+
+        Long id = userService.join(user);
+        return new UserRes(id);
+    }
+
     @PostMapping("/logout")
     public String logout(HttpServletRequest request){
         httpSession.removeAttribute("email");
@@ -40,5 +55,18 @@ public class UserController {
             httpSession.invalidate();
         }
         return "redirect:/";
+    }
+
+    //  @ResponseBody
+    @GetMapping("/{userId}")
+    public UserInfo getUser(@PathVariable("userId") Long id) {
+        System.out.println("id 1: " + id);
+        System.out.println(userRepository.findUserById(id));
+
+        try {
+            return userService.findById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
