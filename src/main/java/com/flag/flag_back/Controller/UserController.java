@@ -1,6 +1,7 @@
 package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Dto.UserDto;
+import com.flag.flag_back.Dto.UserInfo;
 import com.flag.flag_back.Dto.UserRes;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
@@ -56,9 +57,12 @@ public class UserController {
         return "redirect:/";
     }
 
-    @ResponseBody
-    @GetMapping("/{Id}")
-    public UserDto getUser(@RequestParam(value = "id", required = false)Long id) {
+    //  @ResponseBody
+    @GetMapping("/{userId}")
+    public UserInfo getUser(@PathVariable("userId") Long id) {
+        System.out.println("id 1: " + id);
+        System.out.println(userRepository.findUserById(id));
+
         try {
             return userService.findById(id);
         } catch (Exception e) {

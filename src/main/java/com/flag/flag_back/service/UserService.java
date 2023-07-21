@@ -1,6 +1,7 @@
 package com.flag.flag_back.service;
 
 import com.flag.flag_back.Dto.UserDto;
+import com.flag.flag_back.Dto.UserInfo;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -49,7 +50,8 @@ public class UserService {
         }
     }
 
-    public UserDto findById(Long id) {
-        return userRepository.findUserEntityById(id);
+    public UserInfo findById(Long id) {
+        System.out.println("id 2: " + id);
+        return userRepository.findUserById(id);
     }
 }
