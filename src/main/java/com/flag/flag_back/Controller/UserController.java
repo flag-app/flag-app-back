@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public UserRes create(@RequestBody UserDto request) {  //@Valid 문제 있음.
+    public UserRes create(@RequestBody @Valid UserInfo request) {
 
         User user = new User();
         user.setName(request.getName());
