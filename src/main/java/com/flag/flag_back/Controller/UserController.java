@@ -19,6 +19,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("user")
 public class UserController {
     private final HttpSession httpSession; // 접속했는지 안했는지 확인
     @Autowired
