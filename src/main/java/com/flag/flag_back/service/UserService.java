@@ -39,6 +39,7 @@ public class UserService {
     public Long join(User user) {
 
         validateDuplicateMember(user); //중복 회원 검증
+        validateEmail(user);
         userRepository.save(user);
         return user.getId();
     }
@@ -47,6 +48,13 @@ public class UserService {
         List<User> findMembers = userRepository.findUserEntityByName(user.getName());
         if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
+    }
+
+    private void validateEmail(User user) {
+        List<User> findMembers = userRepository.findUserEntityByEmail(user.getEmail());
+        if (!findMembers.isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 이메일입니다.");
         }
     }
 
