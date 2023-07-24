@@ -1,9 +1,11 @@
 package com.flag.flag_back.Dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class UserRes {
     private long id;
 
