@@ -1,4 +1,4 @@
-package com.flag.flag_back.Dto;
+package com.flag.flag_back.dto;
 
 import lombok.Builder;
 import lombok.Data;

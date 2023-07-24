@@ -1,6 +1,6 @@
-package com.flag.flag_back.Dto;
+package com.flag.flag_back.dto;
 
-import com.flag.flag_back.Model.User;
+import com.flag.flag_back.model.User;
 import lombok.*;
 
 @Getter

@@ -1,4 +1,4 @@
-package com.flag.flag_back.Controller;
+package com.flag.flag_back.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

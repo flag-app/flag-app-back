@@ -1,6 +1,6 @@
-package com.flag.flag_back.Controller;
+package com.flag.flag_back.controller;
 
-import com.flag.flag_back.Repository.UserJpaRepository;
+import com.flag.flag_back.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

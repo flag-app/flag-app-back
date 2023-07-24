@@ -1,4 +1,4 @@
-package com.flag.flag_back.Model;
+package com.flag.flag_back.model;
 
 import lombok.*;
 

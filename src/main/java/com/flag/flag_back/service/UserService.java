@@ -1,9 +1,9 @@
 package com.flag.flag_back.service;
 
-import com.flag.flag_back.Dto.UserDto;
-import com.flag.flag_back.Dto.UserInfo;
-import com.flag.flag_back.Model.User;
-import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.dto.UserDto;
+import com.flag.flag_back.dto.UserInfo;
+import com.flag.flag_back.model.User;
+import com.flag.flag_back.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

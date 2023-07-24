@@ -1,9 +1,7 @@
-package com.flag.flag_back.Repository;
+package com.flag.flag_back.repository;
 
-import com.flag.flag_back.Model.User;
+import com.flag.flag_back.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
 
 public interface UserJpaRepository extends JpaRepository<User,Long> {
 
