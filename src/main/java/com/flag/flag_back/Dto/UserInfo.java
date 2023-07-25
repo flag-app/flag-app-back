@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 @ToString
 public class UserInfo {
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,7}$", message = "닉네임은 특수문자를 제외한 2~7자리여야 합니다.")
+    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,5}$", message = "닉네임은 특수문자를 제외한 2~5자리여야 합니다.")
     private String name;
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다.")
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
