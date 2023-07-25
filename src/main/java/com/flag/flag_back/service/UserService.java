@@ -33,6 +33,7 @@ public class UserService {
     @Transactional
     public User login(UserDto userDto) { //B에 검색하여 해당하는 회원정보가 있는지 조회
         System.out.println("email - " + userDto.getEmail() + ", pw - "+ userDto.getPassword());
+        validatelogin(userDto);
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
 
@@ -56,6 +57,13 @@ public class UserService {
         List<User> findMembers = userRepository.findUserEntityByEmail(user.getEmail());
         if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 이메일입니다.");
+        }
+    }
+
+    private void validatelogin(UserDto user) {
+        User user1 = userRepository.findUserEntityByEmailAndPassword(user.getEmail(), user.getPassword());
+        if (user1 == null) {
+            throw new IllegalStateException("잘못된 ID나 email");
         }
     }
 
