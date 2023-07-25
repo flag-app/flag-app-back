@@ -8,16 +8,14 @@ import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("user")
 public class UserController {
@@ -45,7 +43,7 @@ public class UserController {
         return "createUser";
     }
 
-    /*@PostMapping("/join")
+    @PostMapping("/join")
     public UserRes create(@RequestBody @Valid UserInfo request) {
 
         System.out.println("여기까지 들어옴");
@@ -57,29 +55,7 @@ public class UserController {
         System.out.println("여까지도 성공~");
 
         Long id = userService.join(user);
-        System.out.println(userService.findById(id));
         return new UserRes(id);
-    }*/
-
-    @PostMapping("/join")
-    public String create(@Valid UserInfo request, BindingResult result) {
-
-        if (result.hasErrors()) {
-            System.out.println("에러 발생!");
-            return "redirect:/";
-        }
-
-        System.out.println("여기까지 들어옴");
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-
-        System.out.println("여까지도 성공~");
-
-        Long id = userService.join(user);
-        System.out.println(userService.findById(id));
-        return "redirect:/";
     }
 
     @PostMapping("/logout")
