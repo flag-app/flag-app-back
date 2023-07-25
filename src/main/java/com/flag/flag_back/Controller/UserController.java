@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public String loginId(@ModelAttribute UserDto userDto) {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
+    public String loginId(@RequestBody @Valid UserDto userDto) {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
         userService.login(userDto);
         return "redirect:/";
     }

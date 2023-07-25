@@ -32,6 +32,7 @@ public class UserService {
 
     @Transactional
     public User login(UserDto userDto) { //B에 검색하여 해당하는 회원정보가 있는지 조회
+        System.out.println("email - " + userDto.getEmail() + ", pw - "+ userDto.getPassword());
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
 
