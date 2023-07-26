@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -22,6 +23,10 @@ public class UserService {
 
     @Transactional
     public boolean isExistEmail(UserDto userDto) {
+        System.out.print("userDto.toEntity().getEmail())= " + userDto.toEntity().getEmail());
+        System.out.print(".isEmpty()= " + userDto.toEntity().getEmail().isEmpty());
+
+
         return !userRepository.findUserEntityByEmail(userDto.toEntity().getEmail()).isEmpty();
     }
 
@@ -31,13 +36,13 @@ public class UserService {
     }
 
     @Transactional
-    public User login(UserDto userDto) { //B에 검색하여 해당하는 회원정보가 있는지 조회
+    public User login(UserDto userDto) { //DB에 검색하여 해당하는 회원정보가 있는지 조회
         System.out.println("email - " + userDto.getEmail() + ", pw - "+ userDto.getPassword());
-        validatelogin(userDto);
+        //validateLogin(userDto);
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
 
-    @Transactional
+    @Transactional//
     public List<User> findListByName(String name) {
         System.out.println("id 2: " + name);
         return userRepository.findUserEntityByName(name);
@@ -66,11 +71,16 @@ public class UserService {
         }
     }
 
-    private void validatelogin(UserDto user) {
+    private void validateLogin(UserDto user) {
         User user1 = userRepository.findUserEntityByEmailAndPassword(user.getEmail(), user.getPassword());
         if (user1 == null) {
             throw new IllegalStateException("잘못된 ID나 email");
         }
+        /*System.out.print("isExistEmail(user) " + isExistEmail(user));
+
+        if(!isExistEmail(user)) {
+            throw new IllegalStateException("잘못된 ID나 email");
+        }*/
     }
 
     public UserInfo findById(Long id) {

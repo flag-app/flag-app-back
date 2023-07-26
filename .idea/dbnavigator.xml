@@ -13,23 +13,22 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="1b897bab-1866-451c-a6a6-fb745d2d7469">
-      <console name="Connection" type="STANDARD" schema="flag_db" session="Main" />
+      <console name="Connection" type="STANDARD" schema="mysql" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="1b897bab-1866-451c-a6a6-fb745d2d7469" object-ref="schemas/flag_db/tables/UserTB" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="1b897bab-1866-451c-a6a6-fb745d2d7469" dataset="flag_db.UserTB" active-filter-id="">
+    <filter-actions connection-id="1b897bab-1866-451c-a6a6-fb745d2d7469" dataset="flag_db.UserTB" active-filter-id="EMPTY_FILTER">
       <filter id="97be36e2-2301-4175-bed0-d38dcd165210" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="user_id" operator="=" value="" active="true" />
       </filter>
     </filter-actions>
+    <filter-actions connection-id="1b897bab-1866-451c-a6a6-fb745d2d7469" dataset="sys.sys_config" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
