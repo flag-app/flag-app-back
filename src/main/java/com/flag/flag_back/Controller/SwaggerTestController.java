@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SwaggerTestController {
 
     @Operation(summary = "demo 조회", description = "demo 조회 메서드입니다.")
-    @ApiResponses(value = {
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
     })
