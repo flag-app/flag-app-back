@@ -25,16 +25,23 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
-    @GetMapping("login") //GetMapping : "/user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
+    @GetMapping("/login") //GetMapping : "/user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
     public String login(Model model) {
         model.addAttribute("data", "hello!!!");
         return "login";
     }
 
-    @PostMapping("login")
-    public String loginId(@RequestBody @Valid UserDto userDto) {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
+    @PostMapping("/login")
+    public String loginId(@RequestBody @Valid UserDto userDto, HttpSession session, Model model) throws Exception {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
         userService.login(userDto);
-        return "redirect:/";
+
+        if (userDto != null) {
+            session.setAttribute("user", userDto);
+            System.out.print(userDto);
+            return "redirect:/";
+        }
+        model.addAttribute("isLoginSuccess", false);
+        return "redirect:login";
     }
 
     @GetMapping("/join")
@@ -59,8 +66,10 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request){
-        httpSession.removeAttribute("email");
+    public String logout(HttpServletRequest request) {
+        //UserDto userDto = (UserDto) request.getSession().getAttribute("user");
+        //System.out.println("User ID: " + userDto.getEmail());//세션 유지되는지 검증하는 코드
+        httpSession.removeAttribute("user");
         if (httpSession != null) {
             // 현재 사용하고 있는 세션 무효화
             httpSession.invalidate();
