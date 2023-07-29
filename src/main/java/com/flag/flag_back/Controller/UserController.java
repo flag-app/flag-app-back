@@ -95,9 +95,8 @@ public class UserController {
 
     //  @ResponseBody
     @GetMapping("/{userId}")
-    public UserInfo getUser(@PathVariable("userId") Long id) {
-        System.out.println("id 1: " + id);
-        System.out.println(userRepository.findUserById(id));
+    public User getUser(@PathVariable("userId") Long id) {
+        System.out.println(userRepository.findUserEntityById(id));
 
         try {
             return userService.findById(id);

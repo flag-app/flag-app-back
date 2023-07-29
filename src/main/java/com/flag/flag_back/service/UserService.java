@@ -1,7 +1,6 @@
 package com.flag.flag_back.service;
 
 import com.flag.flag_back.Dto.UserDto;
-import com.flag.flag_back.Dto.UserInfo;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -83,8 +81,7 @@ public class UserService {
         }*/
     }
 
-    public UserInfo findById(Long id) {
-        System.out.println("id 2: " + id);
-        return userRepository.findUserById(id);
+    public User findById(Long id) {
+        return userRepository.findUserEntityById(id);
     }
 }
