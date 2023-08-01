@@ -18,14 +18,14 @@ public class Friend {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "userId")
-    private Long userId1;
+    private Long userId;
     @Column(name = "friendUserId")
     private Long userId2;
 
     @Builder
     public Friend(Long id, Long userId1, Long userId2) {
         this.id = id;
-        this.userId1 = userId1;
+        this.userId = userId1;
         this.userId2 = userId2;
     }
 

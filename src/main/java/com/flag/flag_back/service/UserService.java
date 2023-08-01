@@ -16,7 +16,7 @@ public class UserService {
 
     @Transactional
     public Long saveUser(UserDto userDto) {
-        return userRepository.save(userDto.toEntity()).getId();
+        return userRepository.save(userDto.toEntity()).getUserId();
     }
 
     @Transactional
@@ -36,7 +36,7 @@ public class UserService {
     @Transactional
     public User login(UserDto userDto) { //DB에 검색하여 해당하는 회원정보가 있는지 조회
         System.out.println("email - " + userDto.getEmail() + ", pw - "+ userDto.getPassword());
-        //validateLogin(userDto);
+        validateLogin(userDto);
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
 
@@ -52,7 +52,7 @@ public class UserService {
         //validateDuplicateMember(user); //중복 회원 검증
         validateEmail(user);
         userRepository.save(user);
-        return user.getId();
+        return user.getUserId();
     }
 
     private void validateDuplicateMember(User user) {
@@ -82,6 +82,6 @@ public class UserService {
     }
 
     public User findById(Long id) {
-        return userRepository.findUserEntityById(id);
+        return userRepository.findUserEntityByUserId(id);
     }
 }
