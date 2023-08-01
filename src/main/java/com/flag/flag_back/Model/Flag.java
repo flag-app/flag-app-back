@@ -3,6 +3,7 @@ package com.flag.flag_back.Model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 
@@ -27,13 +28,17 @@ public class Flag {
     @Column(name = "userId")
     private String userId;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<User> friendsList;
+
     @Builder
-    public Flag(Long id,String name, String sTime, String eTime, String cycle, String userId) {
+    public Flag(Long id,String name, String sTime, String eTime, String cycle, String userId, List<User> friendsList) {
         this.id = id;
         this.name = name;
         this.sTime = sTime;
         this.eTime = eTime;
         this.cycle = cycle;
         this.userId = userId;
+        this.friendsList = friendsList;
     }
 }

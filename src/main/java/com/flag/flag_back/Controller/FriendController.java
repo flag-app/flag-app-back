@@ -36,10 +36,30 @@ public class FriendController {
     public FriendRes create(@RequestBody @Valid FriendDto dto) {
 
         Friend friend = new Friend();
-        friend.setUserId1(dto.getUserId1());
+        friend.setUserId(dto.getUserId());
         friend.setUserId2(dto.getUserId2());
 
         Long id = friendService.add(friend);
         return new FriendRes(id);
+    }
+
+    //친구 리스트 보여줌.
+    @GetMapping("/friendList/{id}")
+    public List<User> getFriendsList(@PathVariable("id") Long id) {
+        try {
+            return friendService.friendsListById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //내 친구 내에서 검색 - select문을 - where userid = user2Id where userid1 =  myId
+    @GetMapping("/friendList/{id}/{name}") //닉네임으로 리스트 조회
+    public List<User> searchFriendsList(@PathVariable("id") Long id, @PathVariable("name") String name) {
+        try {
+            return friendService.friendsListByNickName(id, name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

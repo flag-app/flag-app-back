@@ -39,6 +39,14 @@ public class UserController {
         return "login";
     }
 
+    @Operation(summary = "로그인", description = "로그인 기능입니다.", tags = { "User Controller" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @PostMapping("/login")
     public String loginId(@RequestBody @Valid UserDto userDto, HttpSession session, Model model) throws Exception {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
         userService.login(userDto);
@@ -96,7 +104,7 @@ public class UserController {
     //  @ResponseBody
     @GetMapping("/{userId}")
     public User getUser(@PathVariable("userId") Long id) {
-        System.out.println(userRepository.findUserEntityById(id));
+        System.out.println(userRepository.findUserEntityByUserId(id));
 
         try {
             return userService.findById(id);
