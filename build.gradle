@@ -50,6 +50,8 @@ test {
 	useJUnitPlatform()
 }
 
-bootJar {
-	mainClassName = 'com.flag.flag_back.FlagBackApplication'
+//bootJar.enabled = false
+//
+//bootJar {
+//	mainClassName = 'com.flag.flag_back.FlagBackApplication'
 }
