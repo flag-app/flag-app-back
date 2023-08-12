@@ -1,16 +1,11 @@
 package com.flag.flag_back.Model;
-
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.List;
 
 @NoArgsConstructor
-
-@Data
-@Table(name = "FlagTB")
-@Entity
-@Getter
+@Data@Table(name = "FlagTB")
+@Entity@Getter
 @Setter
 public class Flag {
     @Id
@@ -19,26 +14,37 @@ public class Flag {
     private Long id;
     @Column(name = "flagName")
     private String name;
-    @Column(name = "startTime")
-    private String sTime;
-    @Column(name = "endTime")
-    private String eTime;
     @Column(name = "cycle")
     private String cycle;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Day> dayList;
+    @Column(name = "min")
+    private Integer minTime;
+    @Column(name = "place")
+    private String place;
+    @Column(name = "memo")
+    private String memo;
     @Column(name = "userId")
-    private String userId;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<User> friendsList;
-
+    private Long userId;
+    @Column(name = "frlist")
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<FlagMember> friendsList;
+    @Column(name = "state")
+    private boolean state;
+    @Column(name = "fixedDate")
+    private String fixedDate;
     @Builder
-    public Flag(Long id,String name, String sTime, String eTime, String cycle, String userId, List<User> friendsList) {
+    public Flag(Long id,String name, String cycle, List<Day> dayList, Integer minTime, String place, String memo, Long userId, List<FlagMember> friendsList, boolean state, String fixedDate) {
         this.id = id;
         this.name = name;
-        this.sTime = sTime;
-        this.eTime = eTime;
         this.cycle = cycle;
+        this.dayList = dayList;
+        this.minTime = minTime;
+        this.place = place;
+        this.memo = memo;
         this.userId = userId;
         this.friendsList = friendsList;
+        this.state = state;
+        this.fixedDate = fixedDate;
     }
 }
