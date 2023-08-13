@@ -14,6 +14,10 @@ public class Day {
     private Long id;
     @Column(name = "date")
     private String date;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NonNull
+    @JoinColumn(name = "flagId")
+    Flag flag;
     @Builder
     public Day(long id, String date) {this.id = id;this.date=date;}
 }

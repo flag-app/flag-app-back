@@ -28,7 +28,11 @@ public class FlagController {
             flag.setUserId(flagDto.getUserId());
             flag.setFriendsList(flagDto.getFriendsList());
 
+            System.out.println(flagDto.getName() + " + " + flagDto.getDayList() + ", " + flagDto.getFriendsList());
+            System.out.println(flag.toString());
+//여기서 dayList, friendsList를 먼저 db에 집어넣어줘야 한다!
             Long id = flagService.createFlag(flag);
+            System.out.println("id: " + id);
             return new FlagRes2(id);
         } catch (Exception e) {
             throw new RuntimeException(e);

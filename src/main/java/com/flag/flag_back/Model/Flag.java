@@ -16,7 +16,7 @@ public class Flag {
     private String name;
     @Column(name = "cycle")
     private String cycle;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "flag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Day> dayList;
     @Column(name = "min")
     private Integer minTime;
@@ -26,8 +26,7 @@ public class Flag {
     private String memo;
     @Column(name = "userId")
     private Long userId;
-    @Column(name = "frlist")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "flag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FlagMember> friendsList;
     @Column(name = "state")
     private boolean state;

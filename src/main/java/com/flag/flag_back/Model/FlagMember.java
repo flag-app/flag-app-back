@@ -12,10 +12,15 @@ public class FlagMember {
     @Column(name = "flagMemId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "userId1")
+    @Column(name = "userId")
     private Long userId;
-    @Column(name = "flagId1")
+    @Column(name = "flagFriendId")
     private Long flagId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NonNull
+    @JoinColumn(name = "flagId")
+    Flag flag;
     @Column(name = "status")
     private boolean status;
     @Builder
