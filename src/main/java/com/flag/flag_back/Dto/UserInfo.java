@@ -21,11 +21,14 @@ public class UserInfo {
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
     private String password;
 
+    private String profile;
+
     public User toEntity() {
         User userEntity = User.builder()
                 .name(name)
                 .email(email)
                 .password(password)
+                .profile(profile)
                 .build();
         return userEntity;
     }
@@ -35,5 +38,6 @@ public class UserInfo {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.profile = profile;
     }
 }

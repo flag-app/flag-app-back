@@ -13,6 +13,8 @@ public class UserDto {
     private String email;
     private String password;
 
+    private String profile;
+
     public User toEntity() {
         User userEntity = User.builder()
                 .id(id)
@@ -24,10 +26,11 @@ public class UserDto {
     }
 
     @Builder
-    public UserDto(long id, String name, String email, String password) {
+    public UserDto(long id, String name, String email, String password, String profile) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.profile = profile;
     }
 }

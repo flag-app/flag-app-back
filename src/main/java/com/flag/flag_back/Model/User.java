@@ -24,14 +24,17 @@ public class User {
     private String email;
     private String password;
 
+    private String profile;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 
     @Builder
-    public User(Long id,String name, String email, String password) {
+    public User(Long id,String name, String email, String password, String profile) {
         this.userId = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.profile = profile;
     }
 }
