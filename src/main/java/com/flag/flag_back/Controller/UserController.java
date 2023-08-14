@@ -113,6 +113,18 @@ public class UserController {
         }
     }
 
+    //닉네임 중복 확인
+    @PostMapping("/identifyName")
+    public Integer identifyNickname(@RequestBody @Valid String name) {
+        //System.out.println(userRepository.findUserEntityByUserId(id));
+
+        try {
+             return userService.existName(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
      /*@RequestMapping("update-ios")
     public String updateUser(HttpServletRequest request) {
 
