@@ -111,13 +111,13 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/nickname")
+    @PatchMapping("/{userId}/nickname")
     @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
     public UserRes updateName(@PathVariable("userId") Long id, @RequestBody String newName) {
-
         try {
             User user = userService.findById(id);
             user.setName(newName);
+            System.out.print(newName);
             userService.save(user); // 새로운 이름으로 업데이트된 사용자 정보 저장
 
             return new UserRes(id);
