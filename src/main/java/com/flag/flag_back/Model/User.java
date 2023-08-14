@@ -3,6 +3,8 @@ package com.flag.flag_back.Model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 
@@ -21,6 +23,9 @@ public class User {
     @Column(name = "userEmail")
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 
     @Builder
     public User(Long id,String name, String email, String password) {

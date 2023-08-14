@@ -1,6 +1,11 @@
 package com.flag.flag_back.Model;
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.FetchType.LAZY;
+
 @NoArgsConstructor
 @Data
 @Table(name = "DayTB")
@@ -12,12 +17,23 @@ public class Day {
     @Column(name = "dayId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "date")
-    private String date;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NonNull
-    @JoinColumn(name = "flagId")
-    Flag flag;
-    @Builder
-    public Day(long id, String date) {this.id = id;this.date=date;}
+
+    @OneToOne(mappedBy = "day", fetch = LAZY)
+    private UserFlagManager userFlagManager;
+
+    @ElementCollection
+    private List<String> date;
+
+    @ElementCollection
+    private List<Boolean> days = new ArrayList<>(100);
+
+    public void setSchedule(List<Integer> possibleDates) {
+        for (int index : possibleDates) {
+            this.days.set(index, true);
+        }
+    }
+
+    public boolean getSchedule(int index) {
+        return this.days.get(index);
+    }
 }
