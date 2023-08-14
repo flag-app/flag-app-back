@@ -11,8 +11,6 @@ n
 >src/test/java/com/flag/flag_back/FlagBackApplicationTests.java,3\b\3bc002f5f782f2f8aa44d44a9ac6ab45dac3c08b
 a
 1src/main/java/com/flag/flag_back/Dto/UserRes.java,3\7\37170e1fee88642defce7c10cb59b9a0fb5cbe8b
-`
-0src/main/java/com/flag/flag_back/Model/User.java,6\3\6347c86ad8958541031fc7eacbf150c7c3cc2434
 i
 9src/main/java/com/flag/flag_back/service/UserService.java,3\2\3278226342061ff557365ae38958c803c1034847
 t
