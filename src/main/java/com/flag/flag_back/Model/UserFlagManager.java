@@ -34,6 +34,17 @@ public class UserFlagManager {
     @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
     private Day day;
 
+    public UserFlagManager(Flag flag, User user, FlagRole role, FlagStatus status) {
+        this.flag = flag;
+        this.user = user;
+        this.role = role;
+        this.status = status;
+    }
+
+    public void setDay(Day day) {
+        this.day = day;
+    }
+
     public boolean ableOrNot(int index) {
         return day.getSchedule(index);
     }
