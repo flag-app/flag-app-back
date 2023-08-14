@@ -13,31 +13,30 @@ import java.util.List;
 @ToString
 public class FlagDto {
     private String name;
-    private List<Day> dayList;
     private Integer minTime;
     private String place;
     private String memo;
-    private Long userId;
-    private List<FlagMember> friendsList;
+    private Long hostId;
+    private List<String> dates;
+    private List<Long> guestId;
+    private List<Integer> possibleDates;
     public Flag toEntity() {
         Flag flag = Flag.builder()
                 .name(name)
-                .dayList(dayList)
                 .minTime(minTime)
                 .place(place)
                 .memo(memo)
-                .userId(userId)
-                .friendsList(friendsList)
                 .build();
         return flag;
     }@Builder
-    public FlagDto(String name, String cycle, List<Day> dayList, Integer minTime, String place, String memo, Long userId, List<FlagMember> friendsList) {
+    public FlagDto(String name, Integer minTime, String place, String memo, Long hostId, List<String> dates, List<Long> guestId, List<Integer> possibleDates) {
         this.name = name;
-        this.dayList = dayList;
         this.minTime = minTime;
         this.place = place;
         this.memo = memo;
-        this.userId = userId;
-        this.friendsList = friendsList;
+        this.hostId = hostId;
+        this.dates = dates;
+        this.guestId = guestId;
+        this.possibleDates = possibleDates;
     }
 }

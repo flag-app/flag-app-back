@@ -2,6 +2,7 @@ package com.flag.flag_back.Model;
 import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -25,9 +26,15 @@ public class Day {
     private List<String> date;
 
     @ElementCollection
-    private List<Boolean> days = new ArrayList<>(100);
+    private List<Boolean> days = new ArrayList<>(Collections.nCopies(100, false));
+
+    public Day(UserFlagManager userFlagManager, List<String> date) {
+        this.userFlagManager = userFlagManager;
+        this.date = date;
+    }
 
     public void setSchedule(List<Integer> possibleDates) {
+        System.out.println("데이즈의 사이즈는?!" + days.size());
         for (int index : possibleDates) {
             this.days.set(index, true);
         }

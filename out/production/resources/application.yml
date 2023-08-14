@@ -7,6 +7,10 @@
 #
 
 spring:
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
   datasource:
     url: jdbc:mysql://flag-db.cbutsy3iam3a.ap-northeast-2.rds.amazonaws.com:3306/flag_db?useSSL=false
     username: admin
@@ -15,7 +19,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

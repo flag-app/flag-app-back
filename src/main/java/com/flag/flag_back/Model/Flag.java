@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
-
 @NoArgsConstructor
 @Data@Table(name = "FlagTB")
 @Entity@Getter
@@ -18,24 +16,14 @@ public class Flag {
     private Long id;
     @Column(name = "flagName")
     private String name;
-    @Column(name = "cycle")
-    private String cycle;
-    @OneToMany(mappedBy = "flag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Day> dayList;
     @Column(name = "min")
     private Integer minTime;
     @Column(name = "place")
     private String place;
     @Column(name = "memo")
     private String memo;
-    @Column(name = "userId")
-    private Long userId;
-    @OneToMany(mappedBy = "flag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<FlagMember> friendsList;
     @Column(name = "state")
     private boolean state;
-    @Column(name = "fixedDate")
-    private String fixedDate;
 
     @ElementCollection
     private List<String> dates;
@@ -43,22 +31,18 @@ public class Flag {
     @OneToMany(mappedBy = "flag", cascade = CascadeType.ALL)
     private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
-    private TotalDay totalDay;
-
     @Builder
-    public Flag(Long id,String name, String cycle, List<Day> dayList, Integer minTime, String place, String memo, Long userId, List<FlagMember> friendsList, boolean state, String fixedDate) {
-        this.id = id;
+    public Flag(String name, Integer minTime, String place, String memo, boolean state, List<String> dates) {
         this.name = name;
-        this.cycle = cycle;
-        this.dayList = dayList;
         this.minTime = minTime;
         this.place = place;
         this.memo = memo;
-        this.userId = userId;
-        this.friendsList = friendsList;
         this.state = state;
-        this.fixedDate = fixedDate;
+        this.dates = dates;
+    }
+
+    public void addUserFlagManager(UserFlagManager userFlagManager) {
+        this.userFlagManagers.add(userFlagManager);
     }
 
     public List<List<Long>> getCandidates() {
