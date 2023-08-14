@@ -26,7 +26,7 @@ public class FriendController {
     @GetMapping("/List/{name}") //닉네임으로 리스트 조회
     public List<User> getUsersList(@PathVariable("name") String name) {
         try {
-            return userService.findByName(name);
+            return userService.findListByName(name);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

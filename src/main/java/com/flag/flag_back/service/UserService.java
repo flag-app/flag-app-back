@@ -28,10 +28,10 @@ public class UserService {
         return !userRepository.findUserEntityByEmail(userDto.toEntity().getEmail()).isEmpty();
     }
 
-//    @Transactional
-//    public boolean isExistName(UserDto userDto) {
-//        return !userRepository.findUserEntityByName(userDto.toEntity().getName()).isEmpty();
-//    }
+    @Transactional
+    public boolean isExistName(UserDto userDto) {
+        return !userRepository.findUserEntityByName(userDto.toEntity().getName()).isEmpty();
+    }
 
     @Transactional
     public User login(UserDto userDto) { //DB에 검색하여 해당하는 회원정보가 있는지 조회
@@ -41,14 +41,9 @@ public class UserService {
     }
 
     @Transactional//
-    public List<User> findByName(String name) {
-        return userRepository.findUserEntityByName(name);
-    }
-
-    public Integer existName(String name) {
+    public List<User> findListByName(String name) {
         System.out.println("id 2: " + name);
-        Integer result = validateDuplicateMember(name);
-        return result;
+        return userRepository.findUserEntityByName(name);
     }
 
     @Transactional
@@ -60,13 +55,10 @@ public class UserService {
         return user.getUserId();
     }
 
-    private Integer validateDuplicateMember(String name) {
-        List<User> findUser = userRepository.findUserEntityByName(name);
-        System.out.print("findUser - " + findUser.toString());
-        if (!findUser.isEmpty()) { //- 유저가 비어 있는게 아니면
-            return 500;
-        }else {
-            return 200;
+    private void validateDuplicateMember(User user) {
+        List<User> findMembers = userRepository.findUserEntityByName(user.getName());
+        if (!findMembers.isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
