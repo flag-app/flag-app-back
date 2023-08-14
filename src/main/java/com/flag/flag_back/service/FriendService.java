@@ -49,4 +49,13 @@ public class FriendService {
         List<User> users = userRepository.findFriendListByName(id, name);
         return users;
     }
+
+    @Transactional
+    public Integer delete(Long id, Long fid) {
+        Friend friend = friendJpaRepository.findUserEntityByUserIdAndUserId2(id, fid);
+        if(friend != null) {
+            friendJpaRepository.delete(friend);
+            return 1;
+        }return 0;
+    }
 }

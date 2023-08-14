@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,5 +63,20 @@ public class FriendController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //친구 삭제
+    @DeleteMapping("/delete/{id}/{fid}")
+    public Map<String, Object> delete(@PathVariable("id") Long id, @PathVariable("fid") Long fid) {
+        Map<String, Object> response = new HashMap<>();
+
+        if(friendService.delete(id,fid) > 0) {
+            response.put("result", "SUCCESS");
+        } else {
+            response.put("result", "FAIL");
+            response.put("reason", "일치하는 정보가 없습니다. id를 확인해주세요.");
+        }
+
+        return response;
     }
 }
