@@ -1,7 +1,10 @@
 package com.flag.flag_back.Model;
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+
+import static javax.persistence.FetchType.LAZY;
 
 @NoArgsConstructor
 @Data@Table(name = "FlagTB")
@@ -32,6 +35,13 @@ public class Flag {
     private boolean state;
     @Column(name = "fixedDate")
     private String fixedDate;
+
+    @OneToMany(mappedBy = "flag", cascade = CascadeType.ALL)
+    private List<UserFlagManager> userFlagManagers = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    private TotalDay totalDay;
+
     @Builder
     public Flag(Long id,String name, String cycle, List<Day> dayList, Integer minTime, String place, String memo, Long userId, List<FlagMember> friendsList, boolean state, String fixedDate) {
         this.id = id;
@@ -45,5 +55,15 @@ public class Flag {
         this.friendsList = friendsList;
         this.state = state;
         this.fixedDate = fixedDate;
+    }
+
+    public List<Long> getAvailableMember(int index) {
+        List<Long> ret = new ArrayList<>();
+        for (UserFlagManager userFlagManager : userFlagManagers) {
+            if (userFlagManager.ableOrNot(index)) {
+                ret.add(userFlagManager.getUser().getUserId());
+            }
+        }
+        return ret;
     }
 }
