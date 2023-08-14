@@ -1,8 +1,6 @@
 package com.flag.flag_back.Controller;
 
-import com.flag.flag_back.Dto.UserDto;
-import com.flag.flag_back.Dto.UserInfo;
-import com.flag.flag_back.Dto.UserRes;
+import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.service.UserService;
@@ -113,21 +111,18 @@ public class UserController {
         }
     }
 
-     /*@RequestMapping("update-ios")
-    public String updateUser(HttpServletRequest request) {
+    @PatchMapping("/nickname")
+    @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
+    public UserRes updateName(@PathVariable("userId") Long id, @RequestBody String newName) {
 
+        try {
+            User user = userService.findById(id);
+            user.setName(newName);
+            userService.save(user); // 새로운 이름으로 업데이트된 사용자 정보 저장
+
+            return new UserRes(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-
-    @RequestMapping("update-web")
-   public String updateUser(HttpServletRequest request) {
-        String userid = request.getParameter("userid");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        //Integer userid = Integer.parseInt(userid);
-
-        //userService.updateUser(userid, password, email);
-
-        return "OK";
-    }*/
-
 }

@@ -84,4 +84,8 @@ public class UserService {
     public User findById(Long id) {
         return userRepository.findUserEntityByUserId(id);
     }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }

@@ -17,7 +17,9 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
-    <last-used-providers />
+    <last-used-providers>
+      <object-type object-type="TABLE" editor-provider="DATA" />
+    </last-used-providers>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
