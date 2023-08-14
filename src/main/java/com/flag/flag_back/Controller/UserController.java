@@ -113,4 +113,21 @@ public class UserController {
         }
     }
 
+     /*@RequestMapping("update-ios")
+    public String updateUser(HttpServletRequest request) {
+
+    }
+
+    @RequestMapping("update-web")
+   public String updateUser(HttpServletRequest request) {
+        String userid = request.getParameter("userid");
+        String password = request.getParameter("password");
+        String email = request.getParameter("email");
+        //Integer userid = Integer.parseInt(userid);
+
+        //userService.updateUser(userid, password, email);
+
+        return "OK";
+    }*/
+
 }
