@@ -80,6 +80,7 @@ public class UserController {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
+        user.setProfile(request.getProfile());
 
         System.out.println("여까지도 성공~");
 
