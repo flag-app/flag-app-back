@@ -1,5 +1,6 @@
 package com.flag.flag_back.Controller;
 
+import com.flag.flag_back.Dto.CandidateRes;
 import com.flag.flag_back.Dto.FlagDto;
 import com.flag.flag_back.Dto.FlagRes2;
 import com.flag.flag_back.Dto.FlagTimeTableRes;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,11 +35,18 @@ public class FlagController {
     }
 
     @PostMapping("/{flagId}/show")
-    public FlagTimeTableRes getFlagTimeTable(@PathVariable @RequestParam Long flagId) {
+    @Operation(summary = "flag 정보 조회", description = "총 인원 수, 되는 인원, 무응답 인원, 가능한 인원의 셀들을 반환합니다.")
+    public FlagTimeTableRes getFlagTimeTable(@PathVariable("flagId") Long flagId) {
+        return flagService.getFlagTimeTableRes(flagId);
+    }
+
+    @PostMapping("/{flagId}/candidate")
+    @Operation(summary = "flag 후보 조회", description = "최소 시간을 만족하는 flag 후보를 반환합니다.")
+    public List<CandidateRes> getCandidates(@PathVariable("flagId") Long flagId) {
         Flag flag = flagService.getFlag(flagId);
 
         if (flag != null) {
-            return new FlagTimeTableRes(flagService.getUserCount(flag), flagService.getCellIndexes(flag));
+            return flagService.getCandidates(flag);
         }
 
         return null;
