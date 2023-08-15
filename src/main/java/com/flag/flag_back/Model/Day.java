@@ -36,6 +36,7 @@ public class Day {
     public void setSchedule(List<Integer> possibleDates) {
         System.out.println("데이즈의 사이즈는?!" + days.size());
         for (int index : possibleDates) {
+            System.out.println(index);
             this.days.set(index, true);
         }
     }

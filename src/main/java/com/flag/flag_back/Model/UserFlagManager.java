@@ -1,13 +1,18 @@
 package com.flag.flag_back.Model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class UserFlagManager {
 
     @Id
@@ -43,6 +48,16 @@ public class UserFlagManager {
 
     public void setDay(Day day) {
         this.day = day;
+    }
+
+    public List<Integer> addAbleCellIndex() {
+        List<Integer> ret = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            if (this.ableOrNot(i)) {
+                ret.add(i);
+            }
+        }
+        return ret;
     }
 
     public boolean ableOrNot(int index) {

@@ -1,6 +1,8 @@
 package com.flag.flag_back.service;
 
+import com.flag.flag_back.Dto.CandidateRes;
 import com.flag.flag_back.Dto.FlagDto;
+import com.flag.flag_back.Dto.FlagTimeTableRes;
 import com.flag.flag_back.Model.*;
 import com.flag.flag_back.Repository.DayRepository;
 import com.flag.flag_back.Repository.FlagMemberRepository;
@@ -31,6 +33,7 @@ public class FlagService {
 
         // 호스트의 정보 설정
         User host = userRepository.findUserEntityByUserId(flagDto.getHostId());
+        System.out.println(host.getName());
         UserFlagManager hostFlagManager = new UserFlagManager(flag, host, FlagRole.HOST, FlagStatus.ACCEPT);
         Day day = new Day(hostFlagManager, flagDto.getDates());
         day.setSchedule(flagDto.getPossibleDates());
@@ -40,6 +43,7 @@ public class FlagService {
         // 게스트의 정보 설정
         for (Long id : flagDto.getGuestId()) {
             User guest = userRepository.findUserEntityByUserId(id);
+            System.out.println(guest.getName());
             UserFlagManager guestFlagManager = new UserFlagManager(flag, guest, FlagRole.GUEST, FlagStatus.STANDBY);
             guestFlagManager.setDay(new Day(guestFlagManager, flagDto.getDates()));
             flag.addUserFlagManager(guestFlagManager);
@@ -51,34 +55,60 @@ public class FlagService {
 
     @Transactional
     public Flag getFlag(Long flagId) {
+        System.out.println("플래그 아이디는?!" + flagId);
         Optional<Flag> flag = flagRepository.findById(flagId);
+        System.out.println("플래그 정보는?!" + flag.get().getId());
         if (flag != null) {
             return flag.get();
         }
         return null;
     }
 
-    public List<List<Long>> getCandidates(Flag flag) {
-        List<List<Long>> ret = new ArrayList<>();
+    @Transactional
+    public FlagTimeTableRes getFlagTimeTableRes(Long flagId) {
+        Optional<Flag> flag = flagRepository.findById(flagId);
+
+        if (flag != null) {
+            return new FlagTimeTableRes(flag.get().getUserCount(), flag.get().getAcceptUsers(),
+                    flag.get().getNonResponseUsers(), flag.get().getCellIndexes());
+        }
+
+        return null;
+    }
+
+    public List<CandidateRes> getCandidates(Flag flag) {
+        List<CandidateRes> ret = new ArrayList<>();
         int standardIndex = flag.getDates().size();
 
         // 날짜별로 보기 위해
-        for (int i = 0; i <  standardIndex; i++) {
+        for (int i = 0; i < standardIndex; i++) {
 
             // 한 날짜의 모든 시간대를 탐색
             for (int startIndex = standardIndex + i; startIndex <  standardIndex * 13;) {
                 HashSet<Long> init = new HashSet<>(getAvailableMember(flag, startIndex));
+
+                if (init.isEmpty())
+                {
+                    startIndex += standardIndex;
+                    continue;
+                }
+
                 int cnt = 1;
                 int currentIndex = startIndex + standardIndex;
                 int standardSize = init.size();
 
                 while(currentIndex <  standardIndex * 13) {
                     List<Long> candidate = getAvailableMember(flag, currentIndex);
+
+                    // 1차로 인원 수 비교
+                    if (candidate.size() != init.size())
+                        break;
+
                     init.addAll(candidate);
 
-                    if (init.size() != standardSize) {
+                    // 2차로 같은 인원만 속해있었는지 비교
+                    if (init.size() != standardSize)
                         break;
-                    }
 
                     cnt++;
                     currentIndex += standardIndex;
@@ -86,8 +116,10 @@ public class FlagService {
 
                 // 최소 시간을 충족한다면 후보로 등록
                 if (cnt >= flag.getMinTime() * 2) {
-                    ret.add(new ArrayList<>(init));
+                    ret.add(new CandidateRes(flag.getDates().get(i), startIndex, currentIndex - standardIndex, new ArrayList<>(init)));
                 }
+
+                startIndex = currentIndex;
             }
         }
 
@@ -105,31 +137,5 @@ public class FlagService {
             }
         }
         return ret;
-    }
-
-    // 가능한 셀 번호 목록을 모두 반환 (ios 요청)
-    public List<Integer> getCellIndexes(Flag flag) {
-        List<Integer> ret = new ArrayList<>();
-        for (UserFlagManager userFlagManager : flag.getUserFlagManagers()) {
-            if (userFlagManager.getStatus() != FlagStatus.ACCEPT) {
-                continue;
-            }
-            ret.addAll(addAbleCellIndex(userFlagManager));
-        }
-        return ret;
-    }
-
-    public List<Integer> addAbleCellIndex(UserFlagManager userFlagManager) {
-        List<Integer> ret = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            if (userFlagManager.ableOrNot(i)) {
-                ret.add(i);
-            }
-        }
-        return ret;
-    }
-
-    public int getUserCount(Flag flag) {
-        return flag.getUserFlagManagers().size();
     }
 }
