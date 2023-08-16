@@ -54,6 +54,32 @@ public class FlagService {
     }
 
     @Transactional
+    public void deleteFlag(Long flagId) {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag != null) {
+            flagRepository.delete(flag);
+        } else {
+            throw new RuntimeException("Flag not found with id: " + flagId);
+        }
+    }
+
+    @Transactional
+    public void updateFlag(Long flagId, FlagDto flagDto) {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag != null) {
+            // Update the flag information based on the flagDto
+            flag.setName(flagDto.getName());
+            flag.setPlace(flagDto.getPlace());
+            flag.setMemo(flagDto.getMemo());
+
+            // Save the updated flag to the database
+            flagRepository.save(flag);
+        } else {
+            throw new RuntimeException("Flag not found with id: " + flagId);
+        }
+    }
+
+    @Transactional
     public Flag getFlag(Long flagId) {
         System.out.println("플래그 아이디는?!" + flagId);
         Optional<Flag> flag = flagRepository.findById(flagId);
