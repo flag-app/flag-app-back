@@ -186,4 +186,23 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/{userId}")
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API입니다.")
+    public ResponseDto<String> deleteUser(@PathVariable("userId") Long id) {
+        try {
+            // 사용자 정보 가져오기
+            User user = userService.findById(id);
+
+            if (user != null) {
+                userService.deleteUser(user); // 사용자 정보 삭제
+
+                return ResponseDto.success("회원 탈퇴 성공", null);
+            } else {
+                return ResponseDto.fail(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.", null);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

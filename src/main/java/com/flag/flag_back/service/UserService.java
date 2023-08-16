@@ -89,6 +89,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void deleteUser(User user) {
+        // 사용자 정보 삭제
+        userRepository.delete(user);
+    }
+
     public boolean changePassword(User user, String oldPassword, String newPassword) {
         // 기존 비밀번호가 맞는지 확인
         if (!oldPassword.equals(user.getPassword())) {
