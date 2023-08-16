@@ -1,13 +1,15 @@
 package com.flag.flag_back.Model;
+
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @NoArgsConstructor
 @Data@Table(name = "FlagTB")
-@Entity@Getter
+@Entity
+@Getter
 @Setter
 public class Flag {
     @Id
@@ -81,5 +83,9 @@ public class Flag {
             ret.addAll(userFlagManager.addAbleCellIndex());
         }
         return ret;
+    }
+
+    public boolean getState() {
+        return state;
     }
 }
