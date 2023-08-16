@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -112,7 +113,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/nickname")
+    @PatchMapping("/{userId}/nickname")
     @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
     public UserRes updateName(@PathVariable("userId") Long id, @RequestBody String newName) {
 
@@ -126,4 +127,63 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
+    @PatchMapping("/{userId}/profile")
+    @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
+    public ResponseDto<String> updateProfile(
+            @PathVariable("userId") Long id,
+            @RequestBody String newProfile) {
+        try {
+            // 사용자 정보 가져오기
+            User user = userService.findById(id);
+
+            // 새 프로필 정보로 업데이트
+            user.setProfile(newProfile);
+            userService.save(user);
+
+            return ResponseDto.success("프로필 변경 성공", null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PatchMapping("/{userId}/password")
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 기존 비밀번호와 새 비밀번호를 요청 값으로 받습니다.")
+    public ResponseDto<String> updatePassword(
+            @PathVariable("userId") Long id,
+            @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
+        try {
+            // 사용자 정보 가져오기
+            User user = userService.findById(id);
+
+            // 기존 비밀번호와 새 비밀번호를 통해 비밀번호 변경 작업 수행
+            boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword());
+
+            if (passwordChanged) {
+                return ResponseDto.success("비밀번호 변경 성공", null);
+            } else {
+                return ResponseDto.fail(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패", null);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/{userId}/email-by-name")
+    @Operation(summary = "이메일 찾기", description = "이메일 찾기 API 입니다. 닉네임값을 요청 값으로 받습니다.")
+    public String getEmailByName(@RequestParam("name") String name) {
+        try {
+            // 이름을 이용하여 이메일 찾기
+            User user = userRepository.findUserByName(name);
+
+            if (user != null) {
+                return user.getEmail();
+            } else {
+                return "이름에 해당하는 사용자를 찾을 수 없습니다.";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

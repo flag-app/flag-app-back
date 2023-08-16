@@ -88,4 +88,18 @@ public class UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
+        // 기존 비밀번호가 맞는지 확인
+        if (!oldPassword.equals(user.getPassword())) {
+            return false; // 기존 비밀번호가 일치하지 않음
+        }
+
+        // 새 비밀번호 저장
+        user.setPassword(newPassword);
+        userRepository.save(user);
+
+        return true;
+    }
+
 }
