@@ -14,6 +14,12 @@ import java.util.List;
 public class UserService {
     private UserRepository userRepository;
 
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(User user) { userRepository.delete(user); } // 사용자 정보 삭제
+
     @Transactional
     public Long saveUser(UserDto userDto) {
         return userRepository.save(userDto.toEntity()).getUserId();
@@ -35,7 +41,7 @@ public class UserService {
 
     @Transactional
     public User login(UserDto userDto) { //DB에 검색하여 해당하는 회원정보가 있는지 조회
-        System.out.println("email - " + userDto.getEmail() + ", pw - "+ userDto.getPassword());
+        System.out.println("email - " + userDto.getEmail() + ", pw - " + userDto.getPassword());
         validateLogin(userDto);
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
@@ -85,14 +91,6 @@ public class UserService {
         return userRepository.findUserEntityByUserId(id);
     }
 
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-
-    public void deleteUser(User user) {
-        // 사용자 정보 삭제
-        userRepository.delete(user);
-    }
 
     public boolean changePassword(User user, String oldPassword, String newPassword) {
         // 기존 비밀번호가 맞는지 확인

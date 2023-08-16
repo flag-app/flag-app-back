@@ -12,12 +12,15 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     // 이메일로 사용자 정보 조회
     List<User> findUserEntityByEmail(String email);
+
     List<User> findUserEntityByName(String name);
 
     User findUserByName(String name);
 
     User findUserEntityByUserId(Long id);
+
     List<User> findUserEntityByPassword(String password);
+
     User findUserEntityByEmailAndPassword(String email, String password);
 
     //@EntityGraph(attributePaths = "friendsList")

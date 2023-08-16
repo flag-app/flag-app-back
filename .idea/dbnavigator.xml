@@ -8,12 +8,12 @@
   <component name="DBNavigator.Project.DatabaseBrowserManager">
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
-    <show-object-properties value="true" />
+    <show-object-properties value="false" />
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="b0efa255-0b37-48c3-bfcd-790f063f39ae">
-      <console name="Connection 1" type="STANDARD" schema="mysql" session="Main" />
+      <console name="Connection 1" type="STANDARD" schema="flag_db" session="Main"><![CDATA[select * from flagtb;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -546,5 +546,8 @@
         </visibility-settings>
       </environment>
     </general-settings>
+  </component>
+  <component name="DBNavigator.Project.StatementExecutionManager">
+    <execution-variables />
   </component>
 </project>

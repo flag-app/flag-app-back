@@ -38,14 +38,8 @@ public class UserController {
         return "login";
     }
 
-    @Operation(summary = "로그인", description = "로그인 기능입니다.", tags = { "User Controller" })
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
+    @Operation(summary = "로그인", description = "로그인 기능입니다.", tags = {"User Controller"})
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = User.class))), @ApiResponse(responseCode = "400", description = "BAD REQUEST"), @ApiResponse(responseCode = "404", description = "NOT FOUND"), @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")})
     @PostMapping("/login")
     public String loginId(@RequestBody @Valid UserDto userDto, HttpSession session, Model model) throws Exception {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
         userService.login(userDto);
@@ -65,14 +59,8 @@ public class UserController {
         return "createUser";
     }
 
-    @Operation(summary = "회원 가입", description = "회원 가입 기능입니다.", tags = { "User Controller" })
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
+    @Operation(summary = "회원 가입", description = "회원 가입 기능입니다.", tags = {"User Controller"})
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = User.class))), @ApiResponse(responseCode = "400", description = "BAD REQUEST"), @ApiResponse(responseCode = "404", description = "NOT FOUND"), @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")})
     @PostMapping("/join")
     public UserRes create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
 
@@ -130,9 +118,7 @@ public class UserController {
 
     @PatchMapping("/{userId}/profile")
     @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
-    public ResponseDto<String> updateProfile(
-            @PathVariable("userId") Long id,
-            @RequestBody String newProfile) {
+    public ResponseDto<String> updateProfile(@PathVariable("userId") Long id, @RequestBody String newProfile) {
         try {
             // 사용자 정보 가져오기
             User user = userService.findById(id);
@@ -149,9 +135,7 @@ public class UserController {
 
     @PatchMapping("/{userId}/password")
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 기존 비밀번호와 새 비밀번호를 요청 값으로 받습니다.")
-    public ResponseDto<String> updatePassword(
-            @PathVariable("userId") Long id,
-            @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
+    public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
         try {
             // 사용자 정보 가져오기
             User user = userService.findById(id);
