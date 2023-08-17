@@ -72,6 +72,7 @@ public class FlagController {
     }
 
     @GetMapping("/{flagId}/fixed") //확정됐는지 아닌지 flag인지 확인- 호스트
+    @Operation(summary = "flag 상태 반환", description = "플래그의 확정 / 진행 상태 반환")
     public boolean checkStateFlag(@PathVariable("flagId") Long flagId) {
         try {
             Flag flag = flagService.getFlagState(flagId);
@@ -83,6 +84,7 @@ public class FlagController {
     }
 
     @GetMapping("/{userId}/fixedlist") // 확정 list
+    @Operation(summary = "flag 확정 list", description = "user의 플래그의 확정 리스트 반환")
     public List<Flag> getFixFlagList(@PathVariable("userId") Long id) {
         try {
             return flagService.getFixedFlagList(id);
@@ -92,6 +94,7 @@ public class FlagController {
     }
 
     @GetMapping("/{userId}/progresslist") // 진행 list
+    @Operation(summary = "flag 진행 list", description = "user의 플래그의 진행 리스트 반환")
     public List<Flag> getProgressFlagList(@PathVariable("userId") Long id) {
         try {
             return flagService.getProgressFlagList(id);
@@ -101,6 +104,7 @@ public class FlagController {
     }
 
     @GetMapping("/info/{flagId}") //상세 정보
+    @Operation(summary = "flag 상세보기", description = "flag정보 반환")
     public Flag getFlagInfo(@PathVariable("flagId") Long id) {
         try {
             return flagService.getFlag(id);

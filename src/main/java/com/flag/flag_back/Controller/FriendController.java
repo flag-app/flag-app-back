@@ -6,6 +6,7 @@ import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.service.FriendService;
 import com.flag.flag_back.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class FriendController {
     private final UserService userService;
 
     @GetMapping("/List/{name}") //닉네임으로 리스트 조회
+    @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
     public List<User> getUsersList(@PathVariable("name") String name) {
         try {
             return userService.findListByName(name);
@@ -35,6 +37,7 @@ public class FriendController {
     }
 
     @PostMapping("/add")
+    @Operation(summary = "친구 추가", description = "id로 유저 친구 추가")
     public FriendRes create(@RequestBody @Valid FriendDto dto) {
 
         Friend friend = new Friend();
@@ -47,6 +50,7 @@ public class FriendController {
 
     //친구 리스트 보여줌.
     @GetMapping("/friendList/{id}")
+    @Operation(summary = "친구 list 조회", description = "내 친구 목록 조회.")
     public List<User> getFriendsList(@PathVariable("id") Long id) {
         try {
             return friendService.friendsListById(id);
@@ -57,6 +61,7 @@ public class FriendController {
 
     //내 친구 내에서 검색 - select문을 - where userid = user2Id where userid1 =  myId
     @GetMapping("/friendList/{id}/{name}") //닉네임으로 리스트 조회
+    @Operation(summary = "친구 내에서 닉네임 검색", description = "내 친구 리스트에서 닉네임으로 친구 검색")
     public List<User> searchFriendsList(@PathVariable("id") Long id, @PathVariable("name") String name) {
         try {
             return friendService.friendsListByNickName(id, name);
@@ -67,6 +72,7 @@ public class FriendController {
 
     //친구 삭제
     @DeleteMapping("/delete/{id}/{fid}")
+    @Operation(summary = "친구 삭제", description = "친구 삭제 API")
     public Map<String, Object> delete(@PathVariable("id") Long id, @PathVariable("fid") Long fid) {
         Map<String, Object> response = new HashMap<>();
 
