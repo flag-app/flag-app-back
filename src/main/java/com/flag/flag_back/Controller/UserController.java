@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Tag(name = "User Controller", description = "로그인 로그아웃 회원가입 기능 구현한 User Controller 입니다.")
 @RestController
@@ -133,7 +134,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/password")
+    @PatchMapping("/{userId}/password1")
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 기존 비밀번호와 새 비밀번호를 요청 값으로 받습니다.")
     public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
         try {
@@ -148,6 +149,23 @@ public class UserController {
             } else {
                 return ResponseDto.fail(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패", null);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PatchMapping("/{userId}/password2")
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+    public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @NotBlank String newPassword) {
+        try {
+            // 사용자 정보 가져오기
+            User user = userService.findById(id);
+
+            // 새 비밀번호로 업데이트
+            user.setPassword(newPassword);
+            userService.save(user);
+
+            return ResponseDto.success("비밀번호 변경 성공", null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

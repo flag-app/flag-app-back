@@ -34,6 +34,20 @@ spring:
     suffix: .html
     check-template-location: true
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: username #Flag naver계정
+    password: password #Flag 계정비밀번호
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
@@ -49,3 +63,4 @@ springdoc:
     doc-expansion: none # tag, operation 펼치는 방식
   paths-to-match:
     - /**
+
