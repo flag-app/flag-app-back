@@ -11,6 +11,9 @@ spring:
     encoding:
       charset: UTF-8
       force: true
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
   datasource:
     url: jdbc:mysql://flag-db.cbutsy3iam3a.ap-northeast-2.rds.amazonaws.com:3306/flag_db?useSSL=false
     username: admin

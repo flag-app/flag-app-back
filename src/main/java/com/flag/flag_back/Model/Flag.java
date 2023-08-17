@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@ToString(exclude = "dates")
 public class Flag {
     @Id
     @Column(name = "flagId")

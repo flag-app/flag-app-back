@@ -164,4 +164,33 @@ public class FlagService {
         }
         return ret;
     }
+
+    public Flag getFlagState(Long id) {
+        Optional<Flag> flag = flagRepository.findById(id);
+        //System.out.println("flag state - " + flag.toString());
+        if (flag != null) {
+            return flag.get();
+        }
+        return null;
+    }
+
+    public List<Flag> getFixedFlagList(Long id) {
+        List<Flag> flags = flagRepository.findFlagByState(id);
+        //System.out.println("flag list - " + flags.toString());
+        if (flags.isEmpty()) {
+            System.out.println("null");
+            return null;
+        }
+        return flags;
+    }
+
+    public List<Flag> getProgressFlagList(Long id) {
+        List<Flag> flags2 = flagRepository.findFlagByState2(id);
+        //System.out.println("flag list - " + flags.toString());
+        if (flags2.isEmpty()) {
+            System.out.println("null");
+            return null;
+        }
+        return flags2;
+    }
 }

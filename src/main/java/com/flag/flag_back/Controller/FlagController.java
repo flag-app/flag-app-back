@@ -2,12 +2,8 @@ package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Dto.CandidateRes;
 import com.flag.flag_back.Dto.FlagDto;
-import com.flag.flag_back.Dto.FlagRes2;
 import com.flag.flag_back.Dto.FlagTimeTableRes;
 import com.flag.flag_back.Model.Flag;
-import com.flag.flag_back.Model.FlagRole;
-import com.flag.flag_back.Model.FlagStatus;
-import com.flag.flag_back.Model.UserFlagManager;
 import com.flag.flag_back.service.FlagService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -73,5 +69,43 @@ public class FlagController {
         }
 
         return null;
+    }
+
+    @GetMapping("/{flagId}/fixed") //확정됐는지 아닌지 flag인지 확인- 호스트
+    public boolean checkStateFlag(@PathVariable("flagId") Long flagId) {
+        try {
+            Flag flag = flagService.getFlagState(flagId);
+            boolean state = flag.getState();
+            return state;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/{userId}/fixedlist") // 확정 list
+    public List<Flag> getFixFlagList(@PathVariable("userId") Long id) {
+        try {
+            return flagService.getFixedFlagList(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/{userId}/progresslist") // 진행 list
+    public List<Flag> getProgressFlagList(@PathVariable("userId") Long id) {
+        try {
+            return flagService.getProgressFlagList(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/info/{flagId}") //상세 정보
+    public Flag getFlagInfo(@PathVariable("flagId") Long id) {
+        try {
+            return flagService.getFlag(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

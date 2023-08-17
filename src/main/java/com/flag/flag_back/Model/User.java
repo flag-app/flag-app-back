@@ -1,5 +1,7 @@
 package com.flag.flag_back.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties("user")
 public class User {
     @Id
     @Column(name = "userId")
@@ -26,6 +29,7 @@ public class User {
 
     private String profile;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 

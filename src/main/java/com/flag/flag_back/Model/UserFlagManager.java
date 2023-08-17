@@ -1,5 +1,6 @@
 package com.flag.flag_back.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,10 +21,12 @@ public class UserFlagManager {
     @Column(name = "userFlagManagerId")
     private Long id;
 
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "flagId")
     private Flag flag;
@@ -36,6 +39,7 @@ public class UserFlagManager {
     @Enumerated(EnumType.STRING)
     private FlagStatus status;
 
+    @JsonIgnore
     @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
     private Day day;
 
