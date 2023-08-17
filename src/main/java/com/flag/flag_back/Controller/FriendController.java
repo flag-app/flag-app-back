@@ -39,13 +39,26 @@ public class FriendController {
     @PostMapping("/add")
     @Operation(summary = "친구 추가", description = "id로 유저 친구 추가")
     public FriendRes create(@RequestBody @Valid FriendDto dto) {
-
+        if(checkUser(dto.getUserId(), dto.getUserId2()) == true){
+            return null;
+        }
         Friend friend = new Friend();
         friend.setUserId(dto.getUserId());
         friend.setUserId2(dto.getUserId2());
 
         Long id = friendService.add(friend);
         return new FriendRes(id);
+    }
+
+    //친구인지 아닌지 검사
+    @GetMapping("/checkFriend/{id}/{id2}") //닉네임으로 리스트 조회
+    @Operation(summary = "친구 중복 검사", description = "친구인지 아닌지 검사")
+    public boolean checkUser(@PathVariable("id") Long id, @PathVariable("id2") Long id2) {
+        try {
+            return friendService.checkFriendById2(id, id2);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //친구 리스트 보여줌.

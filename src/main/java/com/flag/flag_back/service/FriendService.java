@@ -51,6 +51,15 @@ public class FriendService {
     }
 
     @Transactional
+    public boolean checkFriendById2(Long id, Long fid) {
+        Friend friend = friendJpaRepository.findUserEntityByUserIdAndUserId2(id, fid);
+        if(friend == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Transactional
     public Integer delete(Long id, Long fid) {
         Friend friend = friendJpaRepository.findUserEntityByUserIdAndUserId2(id, fid);
         if(friend != null) {
