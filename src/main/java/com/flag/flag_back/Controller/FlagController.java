@@ -70,8 +70,29 @@ public class FlagController {
 
         return null;
     }
+    @PatchMapping("/{flagId}/updateState") //확정으로 변경
+    @Operation(summary = "flag 상태 변경", description = "플래그의 확정 / 확정 시간 저장")
+    public String updateState(@PathVariable("flagId") Long flagId, @RequestBody @Valid String date) {
+        try {
+            flagService.updateFlagState(flagId, date);
+            return "완료";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    @GetMapping("/{flagId}/fixed") //확정됐는지 아닌지 flag인지 확인- 호스트
+
+    @GetMapping("/{flagId}/checkState") //확정 가능한 상태인지 검사.
+    @Operation(summary = "flag 확정 가능여부", description = "모두 응답하여 플래그 확정 가능 여부 확인")
+    public boolean checkState(@PathVariable("flagId") Long flagId) {
+        try {
+            return flagService.checkNonResponse(flagId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/{flagId}/fixed") //확정됐는지 아닌지 flag 확인- 호스트
     @Operation(summary = "flag 상태 반환", description = "플래그의 확정 / 진행 상태 반환")
     public boolean checkStateFlag(@PathVariable("flagId") Long flagId) {
         try {

@@ -12,11 +12,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 @AllArgsConstructor
 @Service
 public class FlagService {
@@ -74,6 +72,33 @@ public class FlagService {
 
             // Save the updated flag to the database
             flagRepository.save(flag);
+        } else {
+            throw new RuntimeException("Flag not found with id: " + flagId);
+        }
+    }
+
+    @Transactional
+    public String updateFlagState(Long flagId, String date) {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag != null) {
+            // Update the flag information based on the flagDto
+            String dates = date;
+            System.out.println("플래그 date?!" + dates);
+            try {
+                SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                Date fixdate = isoFormat.parse(date);
+
+                flag.setState(true);
+                flag.setFixedDate(fixdate);
+
+                flagRepository.save(flag);
+                // 서비스 호출 및 로직 처리
+                return "완료";
+            } catch (ParseException e) {
+                throw new RuntimeException("Invalid date format", e);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         } else {
             throw new RuntimeException("Flag not found with id: " + flagId);
         }
@@ -192,5 +217,20 @@ public class FlagService {
             return null;
         }
         return flags2;
+    }
+
+    public boolean checkNonResponse(Long id) {
+        Optional<Flag> flag = flagRepository.findById(id);
+
+        if (flag != null) {
+            System.out.println("resX" + flag.get().getNonResponseUsers().toString());
+            System.out.println("res0" + flag.get().getAcceptUsers().toString());
+           if(flag.get().getNonResponseUsers().isEmpty()) {
+               return true;
+           }
+           return false;
+        }
+
+        return false;
     }
 }

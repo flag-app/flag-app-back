@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -85,6 +86,10 @@ public class Flag {
         }
         return ret;
     }
+
+    @Column(name = "fixedDate")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fixedDate;
 
     public boolean getState() {
         return state;
