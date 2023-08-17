@@ -46,6 +46,9 @@ dependencies {
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+	//email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 test {
