@@ -2,11 +2,15 @@ package com.flag.flag_back.Dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Data
 @Builder
+@Getter
+@Setter
 public class FlagTimeTableRes {
     private int userTotalCount;
     private List<String> acceptUsers;
