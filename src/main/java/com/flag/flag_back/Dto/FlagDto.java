@@ -13,6 +13,7 @@ import java.util.List;
 @ToString
 public class FlagDto {
     private String name;
+    private Integer timeSlot;
     private Integer minTime;
     private String place;
     private String memo;
@@ -29,8 +30,9 @@ public class FlagDto {
                 .build();
         return flag;
     }@Builder
-    public FlagDto(String name, Integer minTime, String place, String memo, Long hostId, List<String> dates, List<Long> guestId, List<Integer> possibleDates) {
+    public FlagDto(String name, Integer timeSlot, Integer minTime, String place, String memo, Long hostId, List<String> dates, List<Long> guestId, List<Integer> possibleDates) {
         this.name = name;
+        this.timeSlot = timeSlot;
         this.minTime = minTime;
         this.place = place;
         this.memo = memo;

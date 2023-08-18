@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
-@Data@Table(name = "FlagTB")
+@Data
+@Table(name = "FlagTB")
 @Entity
 @Getter
 @Setter
@@ -20,6 +21,8 @@ public class Flag {
     private Long id;
     @Column(name = "flagName")
     private String name;
+    @Column(name = "flagTimeSlot")
+    private Integer timeSlot;
     @Column(name = "min")
     private Integer minTime;
     @Column(name = "place")
@@ -36,8 +39,9 @@ public class Flag {
     private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 
     @Builder
-    public Flag(String name, Integer minTime, String place, String memo, boolean state, List<String> dates) {
+    public Flag(String name, Integer timeSlot, Integer minTime, String place, String memo, boolean state, List<String> dates) {
         this.name = name;
+        this.timeSlot = timeSlot;
         this.minTime = minTime;
         this.place = place;
         this.memo = memo;
@@ -78,7 +82,7 @@ public class Flag {
     // 가능한 셀 번호 목록을 모두 반환 (ios 요청)
     public List<Integer> getCellIndexes() {
         List<Integer> ret = new ArrayList<>();
-        for (UserFlagManager userFlagManager :userFlagManagers) {
+        for (UserFlagManager userFlagManager : userFlagManagers) {
             if (userFlagManager.getStatus() != FlagStatus.ACCEPT) {
                 continue;
             }

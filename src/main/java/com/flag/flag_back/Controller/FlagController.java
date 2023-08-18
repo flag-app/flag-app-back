@@ -1,6 +1,7 @@
 package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Dto.CandidateRes;
+import com.flag.flag_back.Dto.FlagCellRes;
 import com.flag.flag_back.Dto.FlagDto;
 import com.flag.flag_back.Dto.FlagTimeTableRes;
 import com.flag.flag_back.Model.Flag;
@@ -53,13 +54,13 @@ public class FlagController {
         }
     }
 
-    @PostMapping("/{flagId}/show")
+    @GetMapping("/{flagId}/show")
     @Operation(summary = "flag 정보 조회", description = "총 인원 수, 되는 인원, 무응답 인원, 가능한 인원의 셀들을 반환합니다.")
     public FlagTimeTableRes getFlagTimeTable(@PathVariable("flagId") Long flagId) {
         return flagService.getFlagTimeTableRes(flagId);
     }
 
-    @PostMapping("/{flagId}/candidate")
+    @GetMapping("/{flagId}/candidate")
     @Operation(summary = "flag 후보 조회", description = "최소 시간을 만족하는 flag 후보를 반환합니다.")
     public List<CandidateRes> getCandidates(@PathVariable("flagId") Long flagId) {
         Flag flag = flagService.getFlag(flagId);
@@ -132,5 +133,11 @@ public class FlagController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/{flagId}/{cellIndex}")
+    @Operation(summary = "flag 셀 정보 보기", description = "flag 셀 선택 시 시간 및 가능한 인원들 반환")
+    public FlagCellRes getFlagCell(@PathVariable("flagId") Long id, @PathVariable("cellIndex") int index) {
+        return flagService.getFlagCellRes(id, index);
     }
 }

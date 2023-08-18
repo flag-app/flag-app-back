@@ -10,9 +10,9 @@ public class CandidateRes {
     private String date;
     private int startCellIndex;
     private int endCellIndex;
-    private List<Long> candidates;
+    private List<String> candidates;
 
-    public CandidateRes(String date, int startCellIndex, int endCellIndex, List<Long> candidates) {
+    public CandidateRes(String date, int startCellIndex, int endCellIndex, List<String> candidates) {
         this.date = date;
         this.startCellIndex = startCellIndex;
         this.endCellIndex = endCellIndex;
