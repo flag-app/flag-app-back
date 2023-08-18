@@ -1,6 +1,7 @@
 package com.flag.flag_back.service;
 
 import com.flag.flag_back.Dto.CandidateRes;
+import com.flag.flag_back.Dto.FlagCellRes;
 import com.flag.flag_back.Dto.FlagDto;
 import com.flag.flag_back.Dto.FlagTimeTableRes;
 import com.flag.flag_back.Model.*;
@@ -19,15 +20,15 @@ import java.util.*;
 @Service
 public class FlagService {
 
+    private static final String ON_TIME = ":00";
+    private static final String ON_HALF = ":30";
+
     private final UserRepository userRepository;
     private final FlagRepository flagRepository;
-    private final FriendService friendService;
-    private final DayRepository dayRepository;
-    private final FlagMemberRepository flagMemberRepository;
 
     @Transactional
     public Long createFlag(FlagDto flagDto) {
-        Flag flag = new Flag(flagDto.getName(), flagDto.getMinTime(), flagDto.getPlace(), flagDto.getMemo(), false, flagDto.getDates());
+        Flag flag = new Flag(flagDto.getName(), flagDto.getTimeSlot(), flagDto.getMinTime(), flagDto.getPlace(), flagDto.getMemo(), false, flagDto.getDates());
 
         // 호스트의 정보 설정
         User host = userRepository.findUserEntityByUserId(flagDto.getHostId());
@@ -106,22 +107,27 @@ public class FlagService {
 
     @Transactional
     public Flag getFlag(Long flagId) {
-        System.out.println("플래그 아이디는?!" + flagId);
-        Optional<Flag> flag = flagRepository.findById(flagId);
-        System.out.println("플래그 정보는?!" + flag.get().getId());
-        if (flag != null) {
-            return flag.get();
-        }
-        return null;
+        return flagRepository.findById(flagId).orElse(null);
+    }
+
+    @Transactional
+    public FlagCellRes getFlagCellRes(Long flagId, int index) {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        int cnt = flag.getDates().size();
+        int val = index / cnt - 1;
+        return new FlagCellRes(flag.getDates().get(index % cnt),
+                convertIndexToTime(flag.getTimeSlot(), val),
+                convertIndexToTime(flag.getTimeSlot(), val + 1),
+                setAvailableMember(getAvailableMember(flag, index)));
     }
 
     @Transactional
     public FlagTimeTableRes getFlagTimeTableRes(Long flagId) {
-        Optional<Flag> flag = flagRepository.findById(flagId);
+        Flag flag = flagRepository.findById(flagId).orElse(null);
 
         if (flag != null) {
-            return new FlagTimeTableRes(flag.get().getUserCount(), flag.get().getAcceptUsers(),
-                    flag.get().getNonResponseUsers(), flag.get().getCellIndexes());
+            return new FlagTimeTableRes(flag.getUserCount(), flag.getAcceptUsers(),
+                    flag.getNonResponseUsers(), flag.getCellIndexes());
         }
 
         return null;
@@ -167,13 +173,25 @@ public class FlagService {
 
                 // 최소 시간을 충족한다면 후보로 등록
                 if (cnt >= flag.getMinTime() * 2) {
-                    ret.add(new CandidateRes(flag.getDates().get(i), startIndex, currentIndex - standardIndex, new ArrayList<>(init)));
+                    List<String> members = setAvailableMember(new ArrayList<>(init));
+                    ret.add(new CandidateRes(flag.getDates().get(i),
+                            convertIndexToTime(flag.getTimeSlot(), startIndex / standardIndex - 1),
+                            convertIndexToTime(flag.getTimeSlot(), currentIndex / standardIndex - 1),
+                            members));
                 }
 
                 startIndex = currentIndex;
             }
         }
 
+        return ret;
+    }
+
+    private List<String> setAvailableMember(List<Long> temp) {
+        List<String> ret = new ArrayList<>();
+        for (Long id : temp) {
+            ret.add(userRepository.findUserEntityByUserId(id).getName());
+        }
         return ret;
     }
 
@@ -188,6 +206,12 @@ public class FlagService {
             }
         }
         return ret;
+    }
+
+    private String convertIndexToTime(int timeSlot, int index) {
+        String suffix = index % 2 == 1 ? ON_HALF : ON_TIME;
+        int time = timeSlot + (index / 2);
+        return time < 10 ? "0" + time + suffix : time + suffix;
     }
 
     public Flag getFlagState(Long id) {

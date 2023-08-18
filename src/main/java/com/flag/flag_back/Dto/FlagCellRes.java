@@ -5,17 +5,17 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CandidateRes {
+public class FlagCellRes {
 
     private String date;
     private String startTime;
     private String endTime;
-    private List<String> candidates;
+    private List<String> members;
 
-    public CandidateRes(String date, String startTime, String endTime, List<String> candidates) {
+    public FlagCellRes(String date, String startTime, String endTime, List<String> members) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.candidates = candidates;
+        this.members = members;
     }
 }
