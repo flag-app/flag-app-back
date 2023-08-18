@@ -113,10 +113,11 @@ public class FlagService {
     @Transactional
     public FlagCellRes getFlagCellRes(Long flagId, int index) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
-        int val = flag.getDates().size();
-        return new FlagCellRes(flag.getDates().get(index % val),
-                convertIndexToTime(flag.getTimeSlot(), index - val),
-                convertIndexToTime(flag.getTimeSlot(), index - val + 1),
+        int cnt = flag.getDates().size();
+        int val = index / cnt - 1;
+        return new FlagCellRes(flag.getDates().get(index % cnt),
+                convertIndexToTime(flag.getTimeSlot(), val),
+                convertIndexToTime(flag.getTimeSlot(), val + 1),
                 setAvailableMember(getAvailableMember(flag, index)));
     }
 
@@ -173,7 +174,10 @@ public class FlagService {
                 // 최소 시간을 충족한다면 후보로 등록
                 if (cnt >= flag.getMinTime() * 2) {
                     List<String> members = setAvailableMember(new ArrayList<>(init));
-                    ret.add(new CandidateRes(flag.getDates().get(i), startIndex, currentIndex - standardIndex, members));
+                    ret.add(new CandidateRes(flag.getDates().get(i),
+                            convertIndexToTime(flag.getTimeSlot(), startIndex / standardIndex - 1),
+                            convertIndexToTime(flag.getTimeSlot(), currentIndex / standardIndex - 1),
+                            members));
                 }
 
                 startIndex = currentIndex;

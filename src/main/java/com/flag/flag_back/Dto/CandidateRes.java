@@ -8,14 +8,14 @@ import java.util.List;
 public class CandidateRes {
 
     private String date;
-    private int startCellIndex;
-    private int endCellIndex;
+    private String startTime;
+    private String endTime;
     private List<String> candidates;
 
-    public CandidateRes(String date, int startCellIndex, int endCellIndex, List<String> candidates) {
+    public CandidateRes(String date, String startTime, String endTime, List<String> candidates) {
         this.date = date;
-        this.startCellIndex = startCellIndex;
-        this.endCellIndex = endCellIndex;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.candidates = candidates;
     }
 }
