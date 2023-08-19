@@ -36,14 +36,13 @@ public class Day {
     private List<Boolean> days = new ArrayList<>(Collections.nCopies(100, false));
 
     public Day(UserFlagManager userFlagManager, List<String> date) {
+        System.out.println(this.getId());
         this.userFlagManager = userFlagManager;
         this.date = date;
     }
 
     public void setSchedule(List<Integer> possibleDates) {
-        System.out.println("데이즈의 사이즈는?!" + days.size());
         for (int index : possibleDates) {
-            System.out.println(index);
             this.days.set(index, true);
         }
     }
