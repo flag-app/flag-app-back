@@ -43,7 +43,7 @@ public class FlagController {
     }
 
     @PatchMapping("/{flagId}")
-    @Operation(summary = "flag 수정", description = "flag 정보를 수정합니다.")
+    @Operation(summary = "flag 수정", description = "flag 정보((이름,장소,메모)를 수정합니다.")
     public String updateFlag(@PathVariable("flagId") Long flagId, @RequestBody @Valid FlagDto flagDto) {
         try {
             System.out.print(flagDto);
