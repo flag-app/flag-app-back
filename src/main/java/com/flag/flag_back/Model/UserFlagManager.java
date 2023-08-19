@@ -3,6 +3,7 @@ package com.flag.flag_back.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -52,6 +53,14 @@ public class UserFlagManager {
 
     public void setDay(Day day) {
         this.day = day;
+    }
+
+    public void rejectFlag() {
+        this.status = FlagStatus.REJECT;
+    }
+
+    public void acceptFlag() {
+        this.status = FlagStatus.ACCEPT;
     }
 
     public List<Integer> addAbleCellIndex() {
