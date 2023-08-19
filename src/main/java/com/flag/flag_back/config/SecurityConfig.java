@@ -35,6 +35,9 @@ public class SecurityConfig {
                     authorize.antMatchers("/web-login").permitAll() // 웹 로그인 페이지 허용
                             .antMatchers("/ios-login").permitAll()  // iOS 로그인 페이지 허용
                             .antMatchers("/common-login").permitAll() // 공통 로그인 페이지 허용
+                            .antMatchers("/user/join").permitAll() // 회원가입.
+                            .antMatchers("/{userId}/password2").permitAll() // 회원가입.
+                            .antMatchers("/{userId}/email-by-name").permitAll() // 회원가입.
                             .anyRequest().authenticated();
                 })
                 .formLogin(login -> {
