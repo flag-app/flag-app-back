@@ -29,6 +29,7 @@ public class UserFlagManagerService {
         Day day = new Day(guestFlagManager, new ArrayList<>(flag.getDates()));
         day.setSchedule(guestFlagDto.getPossibleDates());
         guestFlagManager.setDay(day);
+        flag.checkState();
     }
 
     @Transactional

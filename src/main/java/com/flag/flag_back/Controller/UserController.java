@@ -39,14 +39,17 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     // 로그인
-    @Operation(summary = "로그인", description = "로그인 API / email과 password로 수정하여 입력하세요!!!!")
+    @Operation(summary = "로그인", description = "로그인 API")
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> member) {
-        log.info("user email = {}", member.get("email"));
-        User user = userRepository.findUserByEmail(member.get("email"));
+    public String login(@RequestBody SignReq signReq) {
+        User user = userRepository.findUserByEmail(signReq.getEmail());
 
-        if (!user.getEmail().equals(member.get("email"))) {
+        if (user == null) {
             throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+        }
+
+        if (!user.getPassword().equals(signReq.getPassword())) {
+            throw new IllegalStateException("비밀번호가 틀립니다.");
         }
 
         return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
