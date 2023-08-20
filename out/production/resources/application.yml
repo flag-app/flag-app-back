@@ -50,8 +50,8 @@ spring:
   doc:
     enabled: true  # 여기에 사용자 정의 스프링 부트 설정을 추가
     jwt:
-      secret: yourSecretKeyHere  # 여기에 액세스 토큰 시크릿 키를 추가
-      expiration: 86400000
+      secret: "yourSecretKeyHere"  # 여기에 액세스 토큰 시크릿 키를 추가
+      expiration: 86400000 # 초
 
 springdoc:
   default-consumes-media-type: application/json

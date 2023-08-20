@@ -3,62 +3,57 @@ package com.flag.flag_back.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flag.flag_back.jwt.JwtAuthenticationFilter;
 import com.flag.flag_back.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private ObjectMapper objectMapper;
-    private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtTokenProvider jwtTokenProvider;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> {
-                    authorize.antMatchers("/web-login").permitAll() // 웹 로그인 페이지 허용
-                            .antMatchers("/ios-login").permitAll()  // iOS 로그인 페이지 허용
-                            .antMatchers("/common-login").permitAll() // 공통 로그인 페이지 허용
-                            .antMatchers("/user/join").permitAll() // 회원가입.
-                            .antMatchers("/{userId}/password2").permitAll() // 회원가입.
-                            .antMatchers("/{userId}/email-by-name").permitAll() // 회원가입.
-                            .anyRequest().authenticated();
-                })
-                .formLogin(login -> {
-                    login.loginPage("/common-login") // 공통 로그인 페이지
-                            .loginProcessingUrl("/login-process")
-                            .usernameParameter("email")
-                            .passwordParameter("password")
-                            .defaultSuccessUrl("/view", true)
-                            .permitAll();
-                })
-                .logout(logout -> logout
-                        .logoutUrl("/logout") // 로그아웃 URL
-                        .logoutSuccessUrl("/login") // 로그아웃 성공 후 이동할 URL
-                        .invalidateHttpSession(true) // 세션 무효화
-                        .deleteCookies("JSESSIONID") // 쿠키 삭제
-                        .permitAll()
-                );
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .httpBasic().disable()
+                .csrf().disable()
+                .cors().and()
+                .authorizeRequests()
+                .antMatchers("/user/join", "/user/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/**").authenticated()
+                .antMatchers("/test").authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 사용하는 경우에 씀
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 
-        return http.build();
-//        http.addFilterAfter(customLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }
 
