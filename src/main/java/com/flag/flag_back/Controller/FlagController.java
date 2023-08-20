@@ -70,8 +70,8 @@ public class FlagController {
     public FlagTimeTableRes getFlagTimeTable(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
-            userRepository.findUserByEmail(email);
-            return flagService.getFlagTimeTableRes(flagId);
+            User user = userRepository.findUserByEmail(email);
+            return flagService.getFlagTimeTableRes(user.getUserId(), flagId);
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -81,15 +81,14 @@ public class FlagController {
     @GetMapping("/{flagId}/candidate")
     @Operation(summary = "flag 후보 조회", description = "최소 시간을 만족하는 flag 후보를 반환합니다.")
     public List<CandidateRes> getCandidates(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
-
-
-        Flag flag = flagService.getFlag(flagId);
-
-        if (flag != null) {
-            return flagService.getCandidates(flag);
+        try {
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            return flagService.getCandidates(user.getUserId(), flagId);
         }
-
-        return null;
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     @PatchMapping("/{flagId}/updateState") //확정으로 변경
     @Operation(summary = "flag 상태 변경", description = "플래그의 확정 / 확정 시간 저장")
@@ -125,21 +124,25 @@ public class FlagController {
         }
     }
 
-    @GetMapping("/{userId}/fixedlist") // 확정 list
+    @GetMapping("/fixedlist") // 확정 list
     @Operation(summary = "flag 확정 list", description = "user의 플래그의 확정 리스트 반환")
-    public List<Flag> getFixFlagList(@PathVariable("userId") Long id) {
+    public List<Flag> getFixFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            return flagService.getFixedFlagList(id);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            return flagService.getFixedFlagList(user.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @GetMapping("/{userId}/progresslist") // 진행 list
+    @GetMapping("/progresslist") // 진행 list
     @Operation(summary = "flag 진행 list", description = "user의 플래그의 진행 리스트 반환")
-    public List<Flag> getProgressFlagList(@PathVariable("userId") Long id) {
+    public List<Flag> getProgressFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            return flagService.getProgressFlagList(id);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            return flagService.getProgressFlagList(user.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
