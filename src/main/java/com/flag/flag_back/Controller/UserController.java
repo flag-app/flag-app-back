@@ -5,6 +5,7 @@ import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +27,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
-@Tag(name = "User Controller", description = "로그인 로그아웃 회원가입 기능 구현한 User Controller 입니다.")
+@Api(tags = "User Controller", value = "로그인 로그아웃 회원가입 기능 구현한 User Controller 입니다.")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -61,29 +62,12 @@ public class UserController {
         return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
     }
 
-//    @Operation(summary = "로그인", description = "로그인 기능입니다.", tags = {"User Controller"})
-//    @ApiResponses({@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = User.class))), @ApiResponse(responseCode = "400", description = "BAD REQUEST"), @ApiResponse(responseCode = "404", description = "NOT FOUND"), @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")})
-//    @PostMapping("/login")
-//    public String loginId(@RequestBody @Valid UserDto userDto, HttpSession session, Model model) throws Exception {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
-//        userService.login(userDto);
-//
-//        if (userDto != null) {
-//            session.setAttribute("user", userDto);
-//            System.out.print(userDto);
-//            return "redirect:/";
-//        }
-//        model.addAttribute("isLoginSuccess", false);
-//        return "redirect:login";
-//    }
-
     @GetMapping("/join")
     public String create(Model model) {
         model.addAttribute("userInfo", new UserInfo());
         return "createUser";
     }
 
-    @Operation(summary = "회원 가입", description = "회원 가입 기능입니다.", tags = {"User Controller"})
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = User.class))), @ApiResponse(responseCode = "400", description = "BAD REQUEST"), @ApiResponse(responseCode = "404", description = "NOT FOUND"), @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")})
     @PostMapping("/join")
     public UserRes create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
 
@@ -177,7 +161,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/password2")
-    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+    @Operation(summary = "비밀번호 찾기한 후 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
     public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @NotBlank String newPassword) {
         try {
             // 사용자 정보 가져오기
@@ -193,7 +177,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{userId}/email-by-name")
+    @GetMapping("/email-by-name")
     @Operation(summary = "이메일 찾기", description = "이메일 찾기 API 입니다. 닉네임값을 요청 값으로 받습니다.")
     public String getEmailByName(@RequestParam("name") String name) {
         try {
