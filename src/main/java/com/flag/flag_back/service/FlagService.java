@@ -126,7 +126,7 @@ public class FlagService {
         UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
         if (userFlagManager == null)
             throw new IllegalStateException();
-        return new FlagTimeTableRes(flag.getUserCount(), flag.getAcceptUsers(),
+        return new FlagTimeTableRes(flag.getTimeSlot(), flag.getUserCount(), flag.getDates(), flag.getAcceptUsers(),
                 flag.getNonResponseUsers(), flag.getCellIndexes());
     }
 
