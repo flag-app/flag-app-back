@@ -23,7 +23,7 @@ public class UserFlagManagerService {
     public void addGuestFlag(Long userId, Long flagId, GuestFlagDto guestFlagDto) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag == null)
-            throw new IllegalStateException();
+            throw new IllegalStateException("존재하지 않는 플래그입니다.");
         UserFlagManager guestFlagManager = findUserFlagManager(userId, flagId);
         guestFlagManager.acceptFlag();
         Day day = new Day(guestFlagManager, new ArrayList<>(flag.getDates()));
