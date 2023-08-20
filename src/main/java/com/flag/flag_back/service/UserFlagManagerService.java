@@ -18,20 +18,13 @@ public class UserFlagManagerService {
 
     private final UserRepository userRepository;
     private final FlagRepository flagRepository;
-    private final UserFlagManagerRepository userFlagManagerRepository;
 
     @Transactional
     public void addGuestFlag(Long userId, Long flagId, GuestFlagDto guestFlagDto) {
-
         Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag == null)
+            throw new IllegalStateException();
         UserFlagManager guestFlagManager = findUserFlagManager(userId, flagId);
-
-        if (guestFlagDto.getFlagStatus() == FlagStatus.REJECT)
-        {
-            guestFlagManager.rejectFlag();
-            return;
-        }
-
         guestFlagManager.acceptFlag();
         Day day = new Day(guestFlagManager, new ArrayList<>(flag.getDates()));
         day.setSchedule(guestFlagDto.getPossibleDates());
