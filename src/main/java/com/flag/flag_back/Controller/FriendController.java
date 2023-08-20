@@ -52,6 +52,7 @@ public class FriendController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return "";
     }
 
     /*@PostMapping("/add")
