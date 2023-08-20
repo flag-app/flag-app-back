@@ -27,73 +27,42 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
-@Api(tags = "User Controller", value = "로그인 로그아웃 회원가입 기능 구현한 User Controller 입니다.")
+@Api(tags = "User Controller", value = "회원 정보 관리 기능 구현한 User Controller 입니다.")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("user")
 public class UserController {
-    private final HttpSession httpSession; // 접속했는지 안했는지 확인
-    @Autowired
-    private final UserRepository userRepository;
-    @Autowired
-    private final UserService userService;
 
+    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/login") //GetMapping : "/user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
-    public String login(Model model) {
-        model.addAttribute("data", "hello!!!");
-        return "login";
-    }
-
     // 로그인
-    @Operation(summary = "로그인", description = "로그인 API")
+    @Operation(summary = "로그인", description = "로그인 API / email과 password로 수정하여 입력하세요!!!!")
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> member) {
         log.info("user email = {}", member.get("email"));
         User user = userRepository.findUserByEmail(member.get("email"));
 
         if (!user.getEmail().equals(member.get("email"))) {
-            System.out.println("로그인 실패???");
             throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
         }
 
         return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
     }
 
-    @GetMapping("/join")
-    public String create(Model model) {
-        model.addAttribute("userInfo", new UserInfo());
-        return "createUser";
-    }
-
+    @Operation(summary = "회원가입", description = "회원가입 API")
     @PostMapping("/join")
     public UserRes create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
-
-        System.out.println("여기까지 들어옴");
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setProfile(request.getProfile());
 
-        System.out.println("여까지도 성공~");
-
         Long id = userService.join(user);
         return new UserRes(id);
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request) {
-        //UserDto userDto = (UserDto) request.getSession().getAttribute("user");
-        //System.out.println("User ID: " + userDto.getEmail());//세션 유지되는지 검증하는 코드
-        httpSession.removeAttribute("user");
-        if (httpSession != null) {
-            // 현재 사용하고 있는 세션 무효화
-            httpSession.invalidate();
-        }
-        return "redirect:/";
     }
 
     //  @ResponseBody
@@ -108,44 +77,43 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/nickname")
+    @PatchMapping("/nickname")
     @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
-    public UserRes updateName(@PathVariable("userId") Long id, @RequestBody String newName) {
-
+    public UserRes updateName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newName) {
         try {
-            User user = userService.findById(id);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
             user.setName(newName);
             userService.save(user); // 새로운 이름으로 업데이트된 사용자 정보 저장
-
-            return new UserRes(id);
+            return new UserRes(user.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @PatchMapping("/{userId}/profile")
+    @PatchMapping("/profile")
     @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
-    public ResponseDto<String> updateProfile(@PathVariable("userId") Long id, @RequestBody String newProfile) {
+    public ResponseDto<String> updateProfile(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newProfile) {
         try {
             // 사용자 정보 가져오기
-            User user = userService.findById(id);
-
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
             // 새 프로필 정보로 업데이트
             user.setProfile(newProfile);
             userService.save(user);
-
             return ResponseDto.success("프로필 변경 성공", null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @PatchMapping("/{userId}/password1")
+    @PatchMapping("/password/change")
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 기존 비밀번호와 새 비밀번호를 요청 값으로 받습니다.")
-    public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
+    public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
         try {
             // 사용자 정보 가져오기
-            User user = userService.findById(id);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
 
             // 기존 비밀번호와 새 비밀번호를 통해 비밀번호 변경 작업 수행
             boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword());
@@ -212,12 +180,13 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/delete")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API입니다.")
-    public ResponseDto<String> deleteUser(@PathVariable("userId") Long id) {
+    public ResponseDto<String> deleteUser(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             // 사용자 정보 가져오기
-            User user = userService.findById(id);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
 
             if (user != null) {
                 userService.deleteUser(user); // 사용자 정보 삭제

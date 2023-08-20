@@ -40,8 +40,10 @@ public class FlagController {
 
     @DeleteMapping("/{flagId}")
     @Operation(summary = "flag 삭제", description = "flag를 삭제합니다.")
-    public String deleteFlag(@PathVariable("flagId") Long flagId) {
+    public String deleteFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
         try {
+            String email = jwtTokenProvider.getUserPk(token);
+            userRepository.findUserByEmail(email);
             flagService.deleteFlag(flagId);
             return "Flag 삭제가 완료되었습니다.";
         } catch (Exception e) {
@@ -51,8 +53,10 @@ public class FlagController {
 
     @PatchMapping("/{flagId}")
     @Operation(summary = "flag 수정", description = "flag 정보((이름,장소,메모)를 수정합니다.")
-    public String updateFlag(@PathVariable("flagId") Long flagId, @RequestBody @Valid FlagDto flagDto) {
+    public String updateFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @RequestBody @Valid FlagDto flagDto) {
         try {
+            String email = jwtTokenProvider.getUserPk(token);
+            userRepository.findUserByEmail(email);
             System.out.print(flagDto);
             flagService.updateFlag(flagId, flagDto);
             return "Flag 수정이 완료되었습니다.";
@@ -63,13 +67,22 @@ public class FlagController {
 
     @GetMapping("/{flagId}/show")
     @Operation(summary = "flag 정보 조회", description = "총 인원 수, 되는 인원, 무응답 인원, 가능한 인원의 셀들을 반환합니다.")
-    public FlagTimeTableRes getFlagTimeTable(@PathVariable("flagId") Long flagId) {
-        return flagService.getFlagTimeTableRes(flagId);
+    public FlagTimeTableRes getFlagTimeTable(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
+        try {
+            String email = jwtTokenProvider.getUserPk(token);
+            userRepository.findUserByEmail(email);
+            return flagService.getFlagTimeTableRes(flagId);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/{flagId}/candidate")
     @Operation(summary = "flag 후보 조회", description = "최소 시간을 만족하는 flag 후보를 반환합니다.")
-    public List<CandidateRes> getCandidates(@PathVariable("flagId") Long flagId) {
+    public List<CandidateRes> getCandidates(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
+
+
         Flag flag = flagService.getFlag(flagId);
 
         if (flag != null) {
