@@ -3,6 +3,7 @@ package com.flag.flag_back.Controller;
 import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,8 +13,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.Map;
 
 @Tag(name = "User Controller", description = "로그인 로그아웃 회원가입 기능 구현한 User Controller 입니다.")
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("user")
@@ -33,26 +38,43 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @GetMapping("/login") //GetMapping : "/user/login"으로 매핑된다. 뷰 리졸버를 통해서 "login.html"을 호출한다.
     public String login(Model model) {
         model.addAttribute("data", "hello!!!");
         return "login";
     }
 
-    @Operation(summary = "로그인", description = "로그인 기능입니다.", tags = {"User Controller"})
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = User.class))), @ApiResponse(responseCode = "400", description = "BAD REQUEST"), @ApiResponse(responseCode = "404", description = "NOT FOUND"), @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")})
+    // 로그인
+    @Operation(summary = "로그인", description = "로그인 API")
     @PostMapping("/login")
-    public String loginId(@RequestBody @Valid UserDto userDto, HttpSession session, Model model) throws Exception {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
-        userService.login(userDto);
+    public String login(@RequestBody Map<String, String> member) {
+        log.info("user email = {}", member.get("email"));
+        User user = userRepository.findUserByEmail(member.get("email"));
 
-        if (userDto != null) {
-            session.setAttribute("user", userDto);
-            System.out.print(userDto);
-            return "redirect:/";
+        if (!user.getEmail().equals(member.get("email"))) {
+            System.out.println("로그인 실패???");
+            throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
         }
-        model.addAttribute("isLoginSuccess", false);
-        return "redirect:login";
+
+        return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
     }
+
+//    @Operation(summary = "로그인", description = "로그인 기능입니다.", tags = {"User Controller"})
+//    @ApiResponses({@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = User.class))), @ApiResponse(responseCode = "400", description = "BAD REQUEST"), @ApiResponse(responseCode = "404", description = "NOT FOUND"), @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")})
+//    @PostMapping("/login")
+//    public String loginId(@RequestBody @Valid UserDto userDto, HttpSession session, Model model) throws Exception {//PostMapping: "/user//login"으로 매핑된다. LoginService의 login 메소드를 실행한다.
+//        userService.login(userDto);
+//
+//        if (userDto != null) {
+//            session.setAttribute("user", userDto);
+//            System.out.print(userDto);
+//            return "redirect:/";
+//        }
+//        model.addAttribute("isLoginSuccess", false);
+//        return "redirect:login";
+//    }
 
     @GetMapping("/join")
     public String create(Model model) {
