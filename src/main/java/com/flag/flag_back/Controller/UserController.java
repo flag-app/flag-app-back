@@ -4,6 +4,7 @@ import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.jwt.JwtTokenProvider;
+import com.flag.flag_back.service.FriendService;
 import com.flag.flag_back.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Api(tags = "User Controller", value = "회원 정보 관리 기능 구현한 User Controller 입니다.")
 @Slf4j
@@ -26,6 +29,7 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final FriendService friendService;
     private final JwtTokenProvider jwtTokenProvider;
 
     // 로그인
@@ -200,7 +204,12 @@ public class UserController {
             // 사용자 정보 가져오기
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-            return null;
+            List<UserResponse> friends = friendService.friendsListById(user.getUserId());
+            List<String> friendsName = new ArrayList<>();
+            for (UserResponse userResponse : friends) {
+                friendsName.add(userResponse.getName());
+            }
+            return new MyPageRes(user.getEmail(), user.getName(), friendsName);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
