@@ -2,10 +2,7 @@ package com.flag.flag_back.service;
 
 import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.*;
-import com.flag.flag_back.Repository.DayRepository;
-import com.flag.flag_back.Repository.FlagMemberRepository;
-import com.flag.flag_back.Repository.FlagRepository;
-import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.Repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +19,7 @@ public class FlagService {
 
     private final UserRepository userRepository;
     private final FlagRepository flagRepository;
+    private final UserFlagManagerService userFlagManagerService;
 
     @Transactional
     public Long createFlag(FlagDto flagDto, User host) {
@@ -118,15 +116,25 @@ public class FlagService {
     }
 
     @Transactional
-    public FlagTimeTableRes getFlagTimeTableRes(Long flagId) {
+    public FlagTimeTableRes getFlagTimeTableRes(Long userId, Long flagId) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag == null)
+            throw new IllegalStateException();
+        UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
+        if (userFlagManager == null)
             throw new IllegalStateException();
         return new FlagTimeTableRes(flag.getUserCount(), flag.getAcceptUsers(),
                 flag.getNonResponseUsers(), flag.getCellIndexes());
     }
 
-    public List<CandidateRes> getCandidates(Flag flag) {
+    public List<CandidateRes> getCandidates(Long userId, Long flagId) {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag == null)
+            throw new IllegalStateException();
+        UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
+        if (userFlagManager == null)
+            throw new IllegalStateException();
+
         List<CandidateRes> ret = new ArrayList<>();
         int standardIndex = flag.getDates().size();
 
