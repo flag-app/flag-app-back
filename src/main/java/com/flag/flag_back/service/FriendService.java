@@ -54,20 +54,30 @@ public class FriendService {
     }
 
     @Transactional
-    public List<UserResponse> friendsListByNickName(Long id, String name) {
+    public UserResponse friendsListByNickName(Long id, String name) {
         //User us = userRepository.findUserEntityById(id);
-        List<User> userList = userRepository.findFriendListByName(id, name);
-        List<UserResponse> userResponseList = new ArrayList<>();
-        for (User user : userList) {
-            UserResponse userResponse = new UserResponse();
-            userResponse.setId(user.getUserId());
-            userResponse.setEmail(user.getEmail());
-            userResponse.setName(user.getName());
-            // 나머지 필드들도 복사
-            userResponseList.add(userResponse);
-        }
-        return userResponseList;
+        User user = userRepository.findFriendListByName(id, name);
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setId(user.getUserId());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setName(user.getName());
+
+        return userResponse;
     }
+
+//    @Transactional
+//    public UserResponse friendsListByEmail(String name) {
+//        User user = userRepository.findFriendListByName(id, name);
+//        UserResponse userResponse = new ArrayList<>();
+//
+//        userResponse.setId(user.getUserId());
+//        userResponse.setEmail(user.getEmail());
+//        userResponse.setName(user.getName());
+//
+//        return userResponse;
+//    }
+
 
     @Transactional
     public boolean checkFriendById2(Long id, Long fid) {

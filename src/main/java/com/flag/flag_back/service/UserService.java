@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -49,19 +48,15 @@ public class UserService {
     }
 
     @Transactional//
-    public List<UserResponse> findListByName(String name) {
-        List<User> userList = userRepository.findUserEntityByName(name);
-        List<UserResponse> userResponseList = new ArrayList<>();
-        for (User user : userList) {
-            UserResponse userResponse = new UserResponse();
+    public UserResponse findListByName(String name) {
+        User user = userRepository.findUserByName(name);
+        UserResponse userResponse = new UserResponse();
+
             userResponse.setId(user.getUserId());
             userResponse.setEmail(user.getEmail());
             userResponse.setName(user.getName());
-            // 나머지 필드들도 복사
-            userResponseList.add(userResponse);
-        }
 
-        return userResponseList;
+        return userResponse;
     }
 
     @Transactional

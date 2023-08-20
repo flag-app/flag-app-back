@@ -31,5 +31,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findFriendListByUserId(@Param("id") Long id);
 
     @Query("SELECT u, f FROM User u LEFT JOIN Friend f ON u.userId = f.userId2 WHERE f.userId =:id and u.name = :name")
-    List<User> findFriendListByName(@Param("id") Long id, @Param("name") String name);
+    User findFriendListByName(@Param("id") Long id, @Param("name") String name);
 }
