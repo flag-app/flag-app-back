@@ -3,6 +3,7 @@ package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Dto.FriendDto;
 import com.flag.flag_back.Dto.FriendRes;
+import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.service.FriendService;
@@ -29,7 +30,7 @@ public class FriendController {
 
     @GetMapping("/List/{name}") //닉네임으로 리스트 조회
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
-    public List<User> getUsersList(@PathVariable("name") String name) {
+    public List<UserResponse> getUsersList(@PathVariable("name") String name) {
         try {
             return userService.findListByName(name);
         } catch (Exception e) {
@@ -65,7 +66,7 @@ public class FriendController {
     //친구 리스트 보여줌.
     @GetMapping("/friendList/{id}")
     @Operation(summary = "친구 list 조회", description = "내 친구 목록 조회.")
-    public List<User> getFriendsList(@PathVariable("id") Long id) {
+    public List<UserResponse> getFriendsList(@PathVariable("id") Long id) {
         try {
             return friendService.friendsListById(id);
         } catch (Exception e) {
@@ -76,7 +77,7 @@ public class FriendController {
     //내 친구 내에서 검색 - select문을 - where userid = user2Id where userid1 =  myId
     @GetMapping("/friendList/{id}/{name}") //닉네임으로 리스트 조회
     @Operation(summary = "친구 내에서 닉네임 검색", description = "내 친구 리스트에서 닉네임으로 친구 검색")
-    public List<User> searchFriendsList(@PathVariable("id") Long id, @PathVariable("name") String name) {
+    public List<UserResponse> searchFriendsList(@PathVariable("id") Long id, @PathVariable("name") String name) {
         try {
             return friendService.friendsListByNickName(id, name);
         } catch (Exception e) {

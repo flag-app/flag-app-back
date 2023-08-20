@@ -1,6 +1,7 @@
 package com.flag.flag_back.service;
 
 
+import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.FriendJpaRepository;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -35,19 +37,36 @@ public class FriendService {
 //        List<Friend> f = friendJpaRepository.findByUserId(id);
 //        return f;
 //    }
-
     @Transactional
-    public List<User> friendsListById(Long id) {
-        //User us = userRepository.findUserEntityById(id);
+    public List<UserResponse> friendsListById(Long id) {
         List<User> users = userRepository.findFriendListByUserId(id);
-        return users;
+
+        List<UserResponse> userResponseList = new ArrayList<>();
+        for (User user : users) {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(user.getUserId());
+            userResponse.setEmail(user.getEmail());
+            userResponse.setName(user.getName());
+            // 나머지 필드들도 복사
+            userResponseList.add(userResponse);
+        }
+        return userResponseList;
     }
 
     @Transactional
-    public List<User> friendsListByNickName(Long id, String name) {
+    public List<UserResponse> friendsListByNickName(Long id, String name) {
         //User us = userRepository.findUserEntityById(id);
-        List<User> users = userRepository.findFriendListByName(id, name);
-        return users;
+        List<User> userList = userRepository.findFriendListByName(id, name);
+        List<UserResponse> userResponseList = new ArrayList<>();
+        for (User user : userList) {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(user.getUserId());
+            userResponse.setEmail(user.getEmail());
+            userResponse.setName(user.getName());
+            // 나머지 필드들도 복사
+            userResponseList.add(userResponse);
+        }
+        return userResponseList;
     }
 
     @Transactional

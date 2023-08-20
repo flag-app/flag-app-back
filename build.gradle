@@ -51,6 +51,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	//modelMapper
+	implementation 'org.modelmapper:modelmapper:2.4.4'
 }
 
 test {
