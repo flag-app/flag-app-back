@@ -25,6 +25,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'corretto'
+    - name : git pull
+      run: git pull origin master
     - name: 프로젝트 빌드
       run: ./gradlew clean build
     - name: AWS credential 설정
