@@ -1,5 +1,5 @@
 name: CICD Test
-run-name: running
+run-name: Running
 
 on:
   push:
