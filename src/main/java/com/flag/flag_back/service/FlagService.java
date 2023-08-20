@@ -1,9 +1,6 @@
 package com.flag.flag_back.service;
 
-import com.flag.flag_back.Dto.CandidateRes;
-import com.flag.flag_back.Dto.FlagCellRes;
-import com.flag.flag_back.Dto.FlagDto;
-import com.flag.flag_back.Dto.FlagTimeTableRes;
+import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.*;
 import com.flag.flag_back.Repository.DayRepository;
 import com.flag.flag_back.Repository.FlagMemberRepository;
@@ -173,6 +170,7 @@ public class FlagService {
                     ret.add(new CandidateRes(flag.getDates().get(i),
                             convertIndexToTime(flag.getTimeSlot(), startIndex / standardIndex - 1),
                             convertIndexToTime(flag.getTimeSlot(), currentIndex / standardIndex - 1),
+                            currentIndex - startIndex,
                             members));
                 }
 
@@ -180,6 +178,7 @@ public class FlagService {
             }
         }
 
+        ret.sort(new CandidateResComparator());
         return ret;
     }
 
