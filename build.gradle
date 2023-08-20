@@ -23,7 +23,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -46,17 +45,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-
-    //Jwt
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     //email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 }
 
 test {

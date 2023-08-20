@@ -47,6 +47,10 @@ spring:
           starttls:
             enable: true
 
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   doc:
     enabled: true  # 여기에 사용자 정의 스프링 부트 설정을 추가
     jwt:
@@ -66,5 +70,4 @@ springdoc:
     disable-swagger-default-url: true
     display-query-params-without-oauth2: true
     doc-expansion: none
-  paths-to-match:
-    - /**
+  paths-to-match: /**
