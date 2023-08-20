@@ -17,9 +17,8 @@ public class FlagDto {
     private Integer minTime;
     private String place;
     private String memo;
-    private Long hostId;
     private List<String> dates;
-    private List<Long> guestId;
+    private List<String> guestNames;
     private List<Integer> possibleDates;
     public Flag toEntity() {
         Flag flag = Flag.builder()
@@ -30,15 +29,14 @@ public class FlagDto {
                 .build();
         return flag;
     }@Builder
-    public FlagDto(String name, Integer timeSlot, Integer minTime, String place, String memo, Long hostId, List<String> dates, List<Long> guestId, List<Integer> possibleDates) {
+    public FlagDto(String name, Integer timeSlot, Integer minTime, String place, String memo, List<String> dates, List<String> guestNames, List<Integer> possibleDates) {
         this.name = name;
         this.timeSlot = timeSlot;
         this.minTime = minTime;
         this.place = place;
         this.memo = memo;
-        this.hostId = hostId;
         this.dates = dates;
-        this.guestId = guestId;
+        this.guestNames = guestNames;
         this.possibleDates = possibleDates;
     }
 }

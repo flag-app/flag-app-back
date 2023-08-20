@@ -5,6 +5,9 @@ import com.flag.flag_back.Dto.FlagCellRes;
 import com.flag.flag_back.Dto.FlagDto;
 import com.flag.flag_back.Dto.FlagTimeTableRes;
 import com.flag.flag_back.Model.Flag;
+import com.flag.flag_back.Model.User;
+import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.FlagService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +22,16 @@ import java.util.List;
 public class FlagController {
 
     private final FlagService flagService;
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/add")
     @Operation(summary = "flag 생성", description = "flag 생성합니다.")
-    public String createFlag(@RequestBody @Valid FlagDto flagDto) {
+    public String createFlag(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid FlagDto flagDto) {
         try {
-            flagService.createFlag(flagDto);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            flagService.createFlag(flagDto, user);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

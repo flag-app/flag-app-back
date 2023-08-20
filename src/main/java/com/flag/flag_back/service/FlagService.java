@@ -27,11 +27,10 @@ public class FlagService {
     private final FlagRepository flagRepository;
 
     @Transactional
-    public Long createFlag(FlagDto flagDto) {
+    public Long createFlag(FlagDto flagDto, User host) {
         Flag flag = new Flag(flagDto.getName(), flagDto.getTimeSlot(), flagDto.getMinTime(), flagDto.getPlace(), flagDto.getMemo(), flagDto.getDates());
 
         // 호스트의 정보 설정
-        User host = userRepository.findUserEntityByUserId(flagDto.getHostId());
         UserFlagManager hostFlagManager = new UserFlagManager(flag, host, FlagRole.HOST, FlagStatus.ACCEPT);
         Day day = new Day(hostFlagManager, flagDto.getDates());
         day.setSchedule(flagDto.getPossibleDates());
@@ -39,8 +38,8 @@ public class FlagService {
         flag.addUserFlagManager(hostFlagManager);
 
         // 게스트의 정보 설정
-        for (Long id : flagDto.getGuestId()) {
-            User guest = userRepository.findUserEntityByUserId(id);
+        for (String guestName : flagDto.getGuestNames()) {
+            User guest = userRepository.findUserByName(guestName);
             UserFlagManager guestFlagManager = new UserFlagManager(flag, guest, FlagRole.GUEST, FlagStatus.STANDBY);
             guestFlagManager.setDay(new Day(guestFlagManager, flagDto.getDates()));
             flag.addUserFlagManager(guestFlagManager);
