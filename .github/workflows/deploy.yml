@@ -14,9 +14,9 @@ env:
 
 jobs:
   build-with-gradle:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-    - name: production 브랜치로 이동
+    - name: master 브랜치로 이동
       uses: actions/checkout@v3
       with:
         ref: master
@@ -25,10 +25,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'corretto'
-    - name: gradlew에 실행 권한 부여
-      run: chmod +x ./gradlew
     - name: 프로젝트 빌드
-      run: ./gradlew clean build -x test
+      run: ./gradlew clean build
     - name: AWS credential 설정
       uses: aws-actions/configure-aws-credentials@v1
       with:
