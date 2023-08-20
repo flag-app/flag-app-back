@@ -8,24 +8,14 @@ import com.flag.flag_back.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.Map;
 
 @Api(tags = "User Controller", value = "회원 정보 관리 기능 구현한 User Controller 입니다.")
 @Slf4j
@@ -119,7 +109,7 @@ public class UserController {
             User user = userRepository.findUserByEmail(email);
 
             // 기존 비밀번호와 새 비밀번호를 통해 비밀번호 변경 작업 수행
-            boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword());
+            boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getNewPassword());
 
             if (passwordChanged) {
                 return ResponseDto.success("비밀번호 변경 성공", null);

@@ -1,7 +1,6 @@
 
 package com.flag.flag_back.Controller;
 
-import com.flag.flag_back.Dto.FriendDto;
 import com.flag.flag_back.Dto.FriendRes;
 import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
@@ -12,7 +11,6 @@ import com.flag.flag_back.service.FriendService;
 import com.flag.flag_back.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,12 +28,13 @@ public class FriendController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    @GetMapping("/List/{name}") //닉네임으로 리스트 조회
+    @GetMapping("/List") //닉네임으로 리스트 조회
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
-    public List<UserResponse> getUsersList(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("name") String name) {
+    public UserResponse getUsersList(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid String name) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
-            userRepository.findUserByEmail(email);
+            User user = userRepository.findUserByEmail(email);
+
             return userService.findListByName(name);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -44,30 +43,22 @@ public class FriendController {
 
     @PostMapping("/add")
     @Operation(summary = "친구 추가", description = "닉네임으로 친구 추가")
-    public String addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
+    public FriendRes addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             User friend = userRepository.findUserByName(friendName);
+
+            Friend friendInfo = new Friend();
+            friendInfo.setUserId(user.getUserId());
+            friendInfo.setUserId2(friend.getUserId());
+
+            Long id = friendService.add(friendInfo);
+            return new FriendRes(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return "";
     }
-
-    /*@PostMapping("/add")
-    @Operation(summary = "친구 추가", description = "id로 유저 친구 추가")
-    public FriendRes create(@RequestBody @Valid FriendDto dto) {
-        if(checkUser(dto.getUserId(), dto.getUserId2()) == true){
-            return null;
-        }
-        Friend friend = new Friend();
-        friend.setUserId(dto.getUserId());
-        friend.setUserId2(dto.getUserId2());
-
-        Long id = friendService.add(friend);
-        return new FriendRes(id);
-    }*/
 
     //친구인지 아닌지 검사
     @GetMapping("/checkFriend") //닉네임으로 리스트 조회
@@ -76,49 +67,50 @@ public class FriendController {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
+            User friend = userRepository.findUserByName(friendName);
 
-            return friendService.checkFriendById2(0L, 0L);
+            return friendService.checkFriendById2(user.getUserId(), friend.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     //친구 리스트 보여줌.
-    @GetMapping("/friendList/{id}")
+    @GetMapping("/friendList")
     @Operation(summary = "친구 list 조회", description = "내 친구 목록 조회.")
-    public List<UserResponse> getFriendsList(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("id") Long id) {
+    public List<UserResponse> getFriendsList(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-            return friendService.friendsListById(id);
+            return friendService.friendsListById(user.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     //내 친구 내에서 검색 - select문을 - where userid = user2Id where userid1 =  myId
-    @GetMapping("/friendList/{id}/{name}") //닉네임으로 리스트 조회
+    @GetMapping("/friendList/name") //닉네임으로 리스트 조회
     @Operation(summary = "친구 내에서 닉네임 검색", description = "내 친구 리스트에서 닉네임으로 친구 검색")
-    public List<UserResponse> searchFriendsList(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("id") Long id, @PathVariable("name") String name) {
+    public UserResponse searchFriendsList(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-            return friendService.friendsListByNickName(id, name);
+            return friendService.friendsListByNickName(user.getUserId(), name);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     //친구 삭제
-    @DeleteMapping("/delete/{id}/{fid}")
+    @DeleteMapping("/delete")
     @Operation(summary = "친구 삭제", description = "친구 삭제 API")
-    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("id") Long id, @PathVariable("fid") Long fid) {
+    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid Long fid) {
 
         String email = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findUserByEmail(email);
         Map<String, Object> response = new HashMap<>();
 
-        if(friendService.delete(id,fid) > 0) {
+        if(friendService.delete(user.getUserId(),fid) > 0) {
             response.put("result", "SUCCESS");
         } else {
             response.put("result", "FAIL");
