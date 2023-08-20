@@ -28,11 +28,10 @@ public class FlagService {
 
     @Transactional
     public Long createFlag(FlagDto flagDto) {
-        Flag flag = new Flag(flagDto.getName(), flagDto.getTimeSlot(), flagDto.getMinTime(), flagDto.getPlace(), flagDto.getMemo(), false, flagDto.getDates());
+        Flag flag = new Flag(flagDto.getName(), flagDto.getTimeSlot(), flagDto.getMinTime(), flagDto.getPlace(), flagDto.getMemo(), flagDto.getDates());
 
         // 호스트의 정보 설정
         User host = userRepository.findUserEntityByUserId(flagDto.getHostId());
-        System.out.println(host.getName());
         UserFlagManager hostFlagManager = new UserFlagManager(flag, host, FlagRole.HOST, FlagStatus.ACCEPT);
         Day day = new Day(hostFlagManager, flagDto.getDates());
         day.setSchedule(flagDto.getPossibleDates());
@@ -42,7 +41,6 @@ public class FlagService {
         // 게스트의 정보 설정
         for (Long id : flagDto.getGuestId()) {
             User guest = userRepository.findUserEntityByUserId(id);
-            System.out.println(guest.getName());
             UserFlagManager guestFlagManager = new UserFlagManager(flag, guest, FlagRole.GUEST, FlagStatus.STANDBY);
             guestFlagManager.setDay(new Day(guestFlagManager, flagDto.getDates()));
             flag.addUserFlagManager(guestFlagManager);
@@ -113,6 +111,8 @@ public class FlagService {
     @Transactional
     public FlagCellRes getFlagCellRes(Long flagId, int index) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag == null)
+            throw new IllegalStateException();
         int cnt = flag.getDates().size();
         int val = index / cnt - 1;
         return new FlagCellRes(flag.getDates().get(index % cnt),
@@ -124,13 +124,10 @@ public class FlagService {
     @Transactional
     public FlagTimeTableRes getFlagTimeTableRes(Long flagId) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
-
-        if (flag != null) {
-            return new FlagTimeTableRes(flag.getUserCount(), flag.getAcceptUsers(),
-                    flag.getNonResponseUsers(), flag.getCellIndexes());
-        }
-
-        return null;
+        if (flag == null)
+            throw new IllegalStateException();
+        return new FlagTimeTableRes(flag.getUserCount(), flag.getAcceptUsers(),
+                flag.getNonResponseUsers(), flag.getCellIndexes());
     }
 
     public List<CandidateRes> getCandidates(Flag flag) {

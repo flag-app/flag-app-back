@@ -39,14 +39,14 @@ public class Flag {
     private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 
     @Builder
-    public Flag(String name, Integer timeSlot, Integer minTime, String place, String memo, boolean state, List<String> dates) {
+    public Flag(String name, Integer timeSlot, Integer minTime, String place, String memo, List<String> dates) {
         this.name = name;
         this.timeSlot = timeSlot;
         this.minTime = minTime;
         this.place = place;
         this.memo = memo;
-        this.state = state;
         this.dates = dates;
+        this.state = false;
     }
 
     public void addUserFlagManager(UserFlagManager userFlagManager) {
@@ -64,13 +64,11 @@ public class Flag {
                 ret.add(userFlagManager.getUser().getName());
             }
         }
-        System.out.println("이거는 됨!");
         return ret;
     }
 
     public List<String> getNonResponseUsers() {
         List<String> ret = new ArrayList<>();
-        System.out.println("여기서 에러터지는듯");
         for (UserFlagManager userFlagManager : userFlagManagers) {
             if (userFlagManager.getStatus() != FlagStatus.ACCEPT) {
                 ret.add(userFlagManager.getUser().getName());
@@ -83,10 +81,9 @@ public class Flag {
     public List<Integer> getCellIndexes() {
         List<Integer> ret = new ArrayList<>();
         for (UserFlagManager userFlagManager : userFlagManagers) {
-            if (userFlagManager.getStatus() != FlagStatus.ACCEPT) {
-                continue;
+            if (userFlagManager.getStatus() == FlagStatus.ACCEPT) {
+                ret.addAll(userFlagManager.addAbleCellIndex());
             }
-            ret.addAll(userFlagManager.addAbleCellIndex());
         }
         return ret;
     }
@@ -97,5 +94,15 @@ public class Flag {
 
     public boolean getState() {
         return state;
+    }
+
+    // 모든 인원이 일정을 입력했다면 확정 가능
+    public void checkState() {
+        for (UserFlagManager userFlagManager : userFlagManagers) {
+            if (userFlagManager.getStatus() == FlagStatus.STANDBY) {
+                return;
+            }
+        }
+        this.state = true;
     }
 }
