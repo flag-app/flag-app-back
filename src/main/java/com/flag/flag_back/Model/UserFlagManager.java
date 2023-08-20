@@ -55,10 +55,6 @@ public class UserFlagManager {
         this.day = day;
     }
 
-    public void rejectFlag() {
-        this.status = FlagStatus.REJECT;
-    }
-
     public void acceptFlag() {
         this.status = FlagStatus.ACCEPT;
     }

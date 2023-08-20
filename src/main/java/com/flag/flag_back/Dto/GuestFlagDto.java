@@ -12,14 +12,10 @@ import java.util.List;
 @ToString
 public class GuestFlagDto {
 
-    private Long guestId;
-    private FlagStatus flagStatus;
     private List<Integer> possibleDates;
 
     @Builder
-    public GuestFlagDto(Long guestId, FlagStatus flagStatus, List<Integer> possibleDates) {
-        this.guestId = guestId;
-        this.flagStatus = flagStatus;
+    public GuestFlagDto(List<Integer> possibleDates) {
         this.possibleDates = possibleDates;
     }
 }
