@@ -203,5 +203,16 @@ public class UserController {
         }
     }
 
-
+    @GetMapping("/mypage")
+    @Operation(summary = "마이페이지", description = "마이페이지 API입니다.")
+    public MyPageRes myPage(@RequestHeader(value = "Authorization", required = false) String token) {
+        try {
+            // 사용자 정보 가져오기
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
