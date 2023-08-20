@@ -39,7 +39,5 @@ a
 1src/main/java/com/flag/flag_back/Dto/FlagRes.java,0\4\04885eb502c46eb9a0cb5dbf29192abdf6cceb96
 e
 5src/main/java/com/flag/flag_back/Dto/FlagCellRes.java,5\d\5da807eac15d592b0c05664b9a22668965586cd4
-q
-Asrc/main/java/com/flag/flag_back/Controller/FriendController.java,7\1\712cd0e0c78cbc377682079b4544f1f6811c2aa8
 c
 3src/main/java/com/flag/flag_back/Dto/FriendDto.java,8\b\8b2587ddd8a0424556112c5b736060c920973497
