@@ -42,7 +42,7 @@ public class MailConfig {
         props.put("mail.smtp.auth", auth);
         props.put("mail.smtp.starttls.enable", starttlsEnable);
         props.put("mail.debug", "true");
-        props.put("mail.smtp.ssl.enable", "true");
+        //props.put("mail.smtp.ssl.enable", "true"); //naver용
 
         return mailSender;
     }

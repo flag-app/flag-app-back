@@ -77,7 +77,8 @@ public class MailController {
 
         // 이메일 전송 설정
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("팀계정@naver.com"); //Flag팀 계정으로 수정
+        //mailMessage.setFrom("0@naver.com"); //Flag팀 계정으로 수정
+        mailMessage.setFrom("team.flagapp@gmail.com");  //Flag팀 계정으로 수정
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Flag 임시비밀번호가 발급되었습니다.");
         mailMessage.setText("Flag 임시 비밀번호:\n" + temporaryPassword);
