@@ -160,7 +160,13 @@ public class FlagController {
 
     @GetMapping("/{flagId}/{cellIndex}")
     @Operation(summary = "flag 셀 정보 보기", description = "flag 셀 선택 시 시간 및 가능한 인원들 반환")
-    public FlagCellRes getFlagCell(@PathVariable("flagId") Long id, @PathVariable("cellIndex") int index) {
-        return flagService.getFlagCellRes(id, index);
+    public FlagCellRes getFlagCell(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @PathVariable("cellIndex") int index) {
+        try {
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            return flagService.getFlagCellRes(user.getUserId(), flagId, index);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

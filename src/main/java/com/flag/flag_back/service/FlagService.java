@@ -103,9 +103,12 @@ public class FlagService {
     }
 
     @Transactional
-    public FlagCellRes getFlagCellRes(Long flagId, int index) {
+    public FlagCellRes getFlagCellRes(Long userId, Long flagId, int index) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag == null)
+            throw new IllegalStateException();
+        UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
+        if (userFlagManager == null)
             throw new IllegalStateException();
         int cnt = flag.getDates().size();
         int val = index / cnt - 1;
@@ -123,7 +126,7 @@ public class FlagService {
         UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
         if (userFlagManager == null)
             throw new IllegalStateException();
-        return new FlagTimeTableRes(flag.getUserCount(), flag.getAcceptUsers(),
+        return new FlagTimeTableRes(flag.getTimeSlot(), flag.getUserCount(), flag.getDates(), flag.getAcceptUsers(),
                 flag.getNonResponseUsers(), flag.getCellIndexes());
     }
 
