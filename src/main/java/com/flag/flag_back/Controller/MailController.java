@@ -2,6 +2,7 @@ package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.config.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,8 +17,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.security.SecureRandom;
 
-//@Tag(name = "Ma정ilController", description = "비밀번호 재발급 구현한 Mail Controller 입니다.")
-@Api(description="비밀번호 재발급 구현한 Mail Controller")
+import static com.flag.flag_back.config.BaseResponseStatus.*;
+
+@Api(description = "비밀번호 재발급 구현한 Mail Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("user")
@@ -41,16 +43,17 @@ public class MailController {
 
     @PostMapping("/reset-password")
     @Operation(summary = "임시 비밀번호 전송", description = "이메일로 임시 비밀번호를 보내는 API")
-    public String sendPasswordResetLink(@RequestParam(value = "email", required = false) String email) {
+    public BaseResponse<String> sendPasswordResetLink(@RequestParam(value = "email", required = false) String email) {
         System.out.print(email);
         User user = userRepository.findUserByEmail(email);
 
         if (user != null) {
             // 임시 비밀번호 생성 및  이메일 전송
             sendPasswordResetEmail(user);
-            return "임시 비밀번호가 이메일로 전송되었습니다.";
+            return new BaseResponse<>(TEMP_PASSWORD_SENT);
         } else {
-            return "등록된 사용자가 없습니다.";
+            return new BaseResponse<>(NO_REGISTERED_USER);
+
         }
     }
 

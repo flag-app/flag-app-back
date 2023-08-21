@@ -1,10 +1,14 @@
 
 package com.flag.flag_back.Controller;
 
+import com.flag.flag_back.Dto.ResponseDto;
+import com.flag.flag_back.Dto.UserRes;
 import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.config.BaseResponse;
+import com.flag.flag_back.config.BaseResponseStatus;
 import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.FriendService;
 import com.flag.flag_back.service.UserService;
@@ -16,6 +20,8 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.flag.flag_back.config.BaseResponseStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,29 +35,48 @@ public class FriendController {
 
     @PostMapping("/List") //닉네임으로 리스트 조회
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
-    public UserResponse getUsersList(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid String name) {
+    public BaseResponse<String> getUsersList(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             boolean exist = checkUser(token, name);
             UserResponse users = userService.findListByName(name);
             users.setExistFriend(exist);
-            return users;
+
+            String valueOfuser = String.valueOf(users);
+            return new BaseResponse<>(valueOfuser);
+
+            //return users;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(NICKNAME_SEARCH_ERROR);
         }
     }
+    //예외처리했는데 반환값 걸리는 부분 주석
+//    @PostMapping("/List") //닉네임으로 리스트 조회
+//    @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
+//    public UserResponse getUsersList(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid String name) {
+//        try {
+//            String email = jwtTokenProvider.getUserPk(token);
+//            User user = userRepository.findUserByEmail(email);
+//            boolean exist = checkUser(token, name);
+//            UserResponse users = userService.findListByName(name);
+//            users.setExistFriend(exist);
+//            return users;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @PostMapping("/add")
     @Operation(summary = "친구 추가", description = "닉네임으로 친구 추가")
-    public String addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
+    public BaseResponse<String> addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             User friend = userRepository.findUserByName(friendName);
 
             if(checkUser(token, friend.getName()) == true){
-                return "이미 친구 입니다";
+                return new BaseResponse<>(ALREADY_FRIEND);
             }
             Friend friendInfo = new Friend();
             friendInfo.setUserId(user.getUserId());
@@ -60,9 +85,9 @@ public class FriendController {
             Long id = friendService.add(friendInfo);
             System.out.println("친구 추가 완료 - " + id);
 
-            return "친구 추가 완료";
+            return new BaseResponse<>(ADD_FRIEND);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(ADD_FRIEND_ERROR);
         }
     }
 
