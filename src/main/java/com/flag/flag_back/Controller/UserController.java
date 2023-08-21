@@ -143,12 +143,13 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/password")
+    @PatchMapping("/password-chage")
     @Operation(summary = "비밀번호 변경(userId)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
-    public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @NotBlank String newPassword) {
+    public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @NotBlank String newPassword) {
         try {
             // 사용자 정보 가져오기
-            User user = userService.findById(id);
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
 
             // 새 비밀번호로 업데이트
             user.setPassword(newPassword);
