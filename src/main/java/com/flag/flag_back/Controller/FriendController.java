@@ -1,7 +1,6 @@
 
 package com.flag.flag_back.Controller;
 
-import com.flag.flag_back.Dto.FriendRes;
 import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
@@ -34,8 +33,10 @@ public class FriendController {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-
-            return userService.findListByName(name);
+            boolean exist = checkUser(token, name);
+            UserResponse users = userService.findListByName(name);
+            users.setExistFriend(exist);
+            return users;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -43,18 +44,23 @@ public class FriendController {
 
     @PostMapping("/add")
     @Operation(summary = "친구 추가", description = "닉네임으로 친구 추가")
-    public FriendRes addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
+    public String addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             User friend = userRepository.findUserByName(friendName);
 
+            if(checkUser(token, friend.getName()) == true){
+                return "이미 친구 입니다";
+            }
             Friend friendInfo = new Friend();
             friendInfo.setUserId(user.getUserId());
             friendInfo.setUserId2(friend.getUserId());
 
             Long id = friendService.add(friendInfo);
-            return new FriendRes(id);
+            System.out.println("친구 추가 완료 - " + id);
+
+            return "친구 추가 완료";
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -9,12 +9,15 @@ public class UserResponse {
     private String name;
     private String email;
 
+    private boolean existFriend;
+
     public UserResponse() {
     }
     @Builder
-    public UserResponse(long id, String name, String email) {
+    public UserResponse(long id, String name, String email, boolean existFriend) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.existFriend = existFriend;
     }
 }
