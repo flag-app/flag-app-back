@@ -33,11 +33,7 @@ jobs:
       run: chmod +x ./gradlew
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-      with:
-        gradle-version: 6.8.3 # Update to the desired Gradle version
-        args: build -x test
-        run: ./gradlew clean build
+      run: ./gradlew clean build
       
     - name: AWS credential 설정
       uses: aws-actions/configure-aws-credentials@v1
