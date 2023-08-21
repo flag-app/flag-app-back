@@ -33,6 +33,17 @@ public class UserFlagManagerService {
     }
 
     @Transactional
+    public List<Flag> getFixedFlags(Long userId) {
+        List<Flag> ret = new ArrayList<>();
+        for (UserFlagManager userFlagManager : userRepository.findUserEntityByUserId(userId).getUserFlagManagers()) {
+            if (userFlagManager.getFlag().getState()) {
+                ret.add(userFlagManager.getFlag());
+            }
+        }
+        return ret;
+    }
+
+    @Transactional
     public UserFlagManager findUserFlagManager(Long userId, Long flagId) {
         User user = userRepository.findUserEntityByUserId(userId);
         List<UserFlagManager> userFlagManagers = user.getUserFlagManagers();
