@@ -47,7 +47,7 @@ public class UserService {
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
 
-    @Transactional
+    @Transactional//
     public UserResponse findListByName(String name) {
         User user = userRepository.findUserByName(name);
         UserResponse userResponse = new UserResponse();
@@ -61,7 +61,8 @@ public class UserService {
 
     @Transactional
     public Long join(User user) {
-        validateDuplicateMember(user); //중복 회원 검증
+
+        //validateDuplicateMember(user); //중복 회원 검증
         validateEmail(user);
         userRepository.save(user);
         return user.getUserId();
@@ -70,7 +71,7 @@ public class UserService {
     private void validateDuplicateMember(User user) {
         List<User> findMembers = userRepository.findUserEntityByName(user.getName());
         if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
