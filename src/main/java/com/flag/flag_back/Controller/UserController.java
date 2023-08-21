@@ -3,6 +3,7 @@ package com.flag.flag_back.Controller;
 import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.config.BaseResponse;
 import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.FriendService;
 import com.flag.flag_back.service.UserService;
@@ -20,6 +21,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.flag.flag_back.config.BaseResponseStatus.*;
+
 @Api(tags = "User Controller", value = "회원 정보 관리 기능 구현한 User Controller 입니다.")
 @Slf4j
 @RestController
@@ -35,18 +38,27 @@ public class UserController {
     // 로그인
     @Operation(summary = "로그인", description = "로그인 API")
     @PostMapping("/login")
-    public String login(@RequestBody SignReq signReq) {
-        User user = userRepository.findUserByEmail(signReq.getEmail());
+    public BaseResponse<String> login(@RequestBody SignReq signReq) {
+        try {
+            User user = userRepository.findUserByEmail(signReq.getEmail());
 
-        if (user == null) {
-            throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+            if (user == null) {
+                throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+            }
+
+            if (!user.getPassword().equals(signReq.getPassword())) {
+                throw new IllegalStateException("비밀번호가 틀립니다.");
+            }
+            String token = jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+
+            return new BaseResponse<>(token);
+        } catch (UsernameNotFoundException e) {
+            return new BaseResponse<>(INVALID_USER);
+        } catch (IllegalStateException e) {
+            return new BaseResponse<>(INVALID_PASSWORD);
+        } catch (Exception e) {
+            return new BaseResponse<>(LOGIN_ERROR);
         }
-
-        if (!user.getPassword().equals(signReq.getPassword())) {
-            throw new IllegalStateException("비밀번호가 틀립니다.");
-        }
-
-        return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
     }
 
     @Operation(summary = "회원가입", description = "회원가입 API")
@@ -105,7 +117,7 @@ public class UserController {
     }
 
     @PatchMapping("/password/change")
-    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 기존 비밀번호와 새 비밀번호를 요청 값으로 받습니다.")
+    @Operation(summary = "비밀번호 변경(Token)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
     public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
         try {
             // 사용자 정보 가져오기
@@ -125,8 +137,8 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/password2")
-    @Operation(summary = "비밀번호 찾기한 후 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+    @PatchMapping("/{userId}/password")
+    @Operation(summary = "비밀번호 변경(userId)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
     public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @NotBlank String newPassword) {
         try {
             // 사용자 정보 가져오기

@@ -28,7 +28,7 @@ public class FriendController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    @GetMapping("/List") //닉네임으로 리스트 조회
+    @PostMapping("/List") //닉네임으로 리스트 조회
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
     public UserResponse getUsersList(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid String name) {
         try {
@@ -61,7 +61,7 @@ public class FriendController {
     }
 
     //친구인지 아닌지 검사
-    @GetMapping("/checkFriend") //닉네임으로 리스트 조회
+    @PostMapping("/checkFriendId") //닉네임으로 리스트 조회
     @Operation(summary = "친구 중복 검사", description = "친구인지 아닌지 검사")
     public boolean checkUser(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
         try {
@@ -89,7 +89,7 @@ public class FriendController {
     }
 
     //내 친구 내에서 검색 - select문을 - where userid = user2Id where userid1 =  myId
-    @GetMapping("/friendList/name") //닉네임으로 리스트 조회
+    @PostMapping("/friendList/name") //닉네임으로 리스트 조회
     @Operation(summary = "친구 내에서 닉네임 검색", description = "내 친구 리스트에서 닉네임으로 친구 검색")
     public UserResponse searchFriendsList(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
         try {
