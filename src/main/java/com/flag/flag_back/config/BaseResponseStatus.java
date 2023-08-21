@@ -10,7 +10,13 @@ public enum BaseResponseStatus {
     /*user 관련 예외*/
     INVALID_USER(false, 1001, "유효하지 않은 사용자입니다."),
     INVALID_PASSWORD(false, 1002, "비밀번호가 틀립니다."),
-    LOGIN_ERROR(false, 1003, "로그인 중 오류가 발생했습니다.");
+    LOGIN_ERROR(false, 1003, "로그인 중 오류가 발생했습니다."),
+    JOIN_ERROR(false, 1004, "회원가입 중 오류가 발생했습니다."),
+    USER_RETRIEVAL_ERROR(false, 1005, "사용자 정보를 가져오는 중 오류가 발생했습니다."),
+    NICKNAME_CHANGE_ERROR(false, 1006, "닉네임 변경 중 오류가 발생했습니다."),
+    PROFILE_CHANGE_ERROR(false, 1007, "프로필 변경 중 오류가 발생했습니다.");
+
+
 
     //1000 : 요청 성공
 
