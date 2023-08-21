@@ -87,7 +87,7 @@ public class FriendService {
         }
         return true;
     }
-
+//
     @Transactional
     public Integer delete(Long id, Long fid) {
         Friend friend = friendJpaRepository.findUserEntityByUserIdAndUserId2(id, fid);
