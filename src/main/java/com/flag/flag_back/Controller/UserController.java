@@ -63,15 +63,21 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "회원가입 API")
     @PostMapping("/join")
-    public UserRes create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setProfile(request.getProfile());
+    public BaseResponse<String> create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
+        try {
+            User user = new User();
+            user.setName(request.getName());
+            user.setEmail(request.getEmail());
+            user.setPassword(request.getPassword());
+            user.setProfile(request.getProfile());
 
-        Long id = userService.join(user);
-        return new UserRes(id);
+            Long id = userService.join(user);
+            String userRes = String.valueOf(new UserRes(id));
+            return new BaseResponse<>(userRes);
+
+        } catch (Exception e) {
+            return new BaseResponse<>(JOIN_ERROR);
+        }
     }
 
     //  @ResponseBody
