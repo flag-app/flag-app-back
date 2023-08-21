@@ -196,6 +196,24 @@ public class UserController {
         }
     }
 
+    @GetMapping("/checkEmail")
+    @Operation(summary = "이메일 중복 검사", description = "이메일 중복 검증 API입니다.")
+    public String checkExistEmail(@RequestBody @NotBlank String name) {
+        try {
+            System.out.println("email - " + name);
+            // 이름을 이용하여 이메일 찾기
+            User user = userRepository.findUserByName(name);
+            //System.out.println("user - " + user.toString());
+            if (user != null) {
+                return "이미 존재하는 닉네임입니다.";
+            } else {
+                return "사용가능한 닉네임입니다.";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @DeleteMapping("/delete")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API입니다.")
     public ResponseDto<String> deleteUser(@RequestHeader(value = "Authorization", required = false) String token) {
