@@ -29,10 +29,14 @@ jobs:
       run: git pull origin master
       
 
+    - name: Run chmod to make gradlew executable
+      run: chmod +x ./gradlew
+
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
-        arguments: clean build -x test
+        gradle-version: 6.8.3 # Update to the desired Gradle version
+        args: build -x test
       
     - name: AWS credential 설정
       uses: aws-actions/configure-aws-credentials@v1
