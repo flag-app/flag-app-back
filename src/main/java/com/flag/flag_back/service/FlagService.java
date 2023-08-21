@@ -263,4 +263,20 @@ public class FlagService {
 
         return false;
     }
+
+    @Transactional
+    public void fixFlag(Long userId, Long flagId, int index) throws ParseException {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag == null)
+            throw new IllegalStateException();
+        if (!flag.getState())
+            throw new IllegalStateException();
+        UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
+        if (userFlagManager == null)
+            throw new IllegalStateException();
+        List<CandidateRes> candidates = getCandidates(userId, flagId);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        flag.setFixedDate(formatter.parse(candidates.get(index).getDate()));
+        System.out.println(flag.getFixedDate());
+    }
 }

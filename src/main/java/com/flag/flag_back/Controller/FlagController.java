@@ -172,4 +172,17 @@ public class FlagController {
             throw new RuntimeException(e);
         }
     }
+
+    @PostMapping("/{flagId}/candidate/fix")
+    @Operation(summary = "flag 확정 짓기", description = "flag 후보들 중 확정할 후보의 인덱스를 받습니다.")
+    public String fixFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @RequestBody @Valid int index) {
+        try {
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            flagService.fixFlag(user.getUserId(), flagId, index);
+            return "redirect:/";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
