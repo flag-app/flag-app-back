@@ -178,7 +178,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/checkName")
+    @PostMapping("/checkName")
     @Operation(summary = "닉네임 중복 검사", description = "닉네임 중복 검증 API입니다.")
     public String checkExistName(@RequestBody @NotBlank String name) {
         try {
@@ -190,6 +190,25 @@ public class UserController {
                 return "이미 존재하는 닉네임입니다.";
             } else {
                 return "사용가능한 닉네임입니다.";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/checkEmail")
+    @Operation(summary = "이메일 중복 검사", description = "이메일 중복 검증 API입니다.")
+    public String checkExistEmail(@RequestBody @NotBlank String email) {
+        try {
+            System.out.println("email - " + email);
+            // 이름을 이용하여 이메일 찾기
+
+            User user = userRepository.findUserByEmail(email);
+
+            if (user != null) {
+                return "이미 존재하는 이메일입니다.";
+            } else {
+                return "사용가능한 이메일입니다.";
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

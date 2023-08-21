@@ -47,7 +47,7 @@ public class UserService {
         return userRepository.findUserEntityByEmailAndPassword(userDto.toEntity().getEmail(), userDto.toEntity().getPassword());
     }
 
-    @Transactional//
+    @Transactional
     public UserResponse findListByName(String name) {
         User user = userRepository.findUserByName(name);
         UserResponse userResponse = new UserResponse();

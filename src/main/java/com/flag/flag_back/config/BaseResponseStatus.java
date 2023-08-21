@@ -1,5 +1,5 @@
 package com.flag.flag_back.config;
-import com.flag.flag_back.Dto.ResponseDto;
+
 import lombok.Getter;
 
 @Getter
