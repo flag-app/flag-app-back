@@ -2,6 +2,7 @@ package com.flag.flag_back.Controller;
 
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.security.SecureRandom;
 
-@Tag(name = "MailController", description = "비밀번호 찾기 구현한 Mail Controller 입니다.")
+//@Tag(name = "Ma정ilController", description = "비밀번호 재발급 구현한 Mail Controller 입니다.")
+@Api(description="비밀번호 재발급 구현한 Mail Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("user")
@@ -46,7 +48,6 @@ public class MailController {
         if (user != null) {
             // 임시 비밀번호 생성 및  이메일 전송
             sendPasswordResetEmail(user);
-
             return "임시 비밀번호가 이메일로 전송되었습니다.";
         } else {
             return "등록된 사용자가 없습니다.";
