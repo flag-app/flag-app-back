@@ -117,7 +117,7 @@ public class UserController {
     }
 
     @PatchMapping("/password/change")
-    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 기존 비밀번호와 새 비밀번호를 요청 값으로 받습니다.")
+    @Operation(summary = "비밀번호 변경(Token)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
     public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
         try {
             // 사용자 정보 가져오기
@@ -137,8 +137,8 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/password2")
-    @Operation(summary = "비밀번호 찾기한 후 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+    @PatchMapping("/{userId}/password")
+    @Operation(summary = "비밀번호 변경(userId)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
     public ResponseDto<String> updatePassword(@PathVariable("userId") Long id, @RequestBody @NotBlank String newPassword) {
         try {
             // 사용자 정보 가져오기
