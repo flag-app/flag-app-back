@@ -131,8 +131,9 @@ public class FlagController {
             List<FixedFlagRes> ret = new ArrayList<>();
             List<Flag> temp = flagService.getFixedFlagList(user.getUserId());
             for (Flag flag : temp) {
-                ret.add(flag.getName(), flag.g)
+                //ret.add(flag.getName(), flag.g)
             }
+            return ret;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
