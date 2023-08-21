@@ -14,8 +14,8 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: /opt/codedeploy-agent/deployment-root/3ed21cfb-e328-4bcf-945e-c909b9ca3646/d-DGMDRV8C0/deployment-archive/scripts/stop.sh
+    - location: scripts/stop.sh
       timeout: 60
   ApplicationStart:
-    - location: /opt/codedeploy-agent/deployment-root/3ed21cfb-e328-4bcf-945e-c909b9ca3646/d-DGMDRV8C0/deployment-archive/scripts/start.sh
+    - location: scripts/start.sh
       timeout: 60
