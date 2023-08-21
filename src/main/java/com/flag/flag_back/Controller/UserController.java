@@ -80,6 +80,19 @@ public class UserController {
         }
     }
 
+    //    @Operation(summary = "회원가입", description = "회원가입 API")
+//    @PostMapping("/join")
+//    public UserRes create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
+//        User user = new User();
+//        user.setName(request.getName());
+//        user.setEmail(request.getEmail());
+//        user.setPassword(request.getPassword());
+//        user.setProfile(request.getProfile());
+//
+//        Long id = userService.join(user);
+//        return new UserRes(id);
+//    }
+
     //  @ResponseBody
     @GetMapping("/{userId}")
     public User getUser(@PathVariable("userId") Long id) {
@@ -91,6 +104,19 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
+//    @GetMapping("/{userId}")
+//    public User getUser(@PathVariable("userId") Long id) {
+//        System.out.println(userRepository.findUserEntityByUserId(id));
+//
+//        try {
+//            return userService.findById(id);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
 
     @PatchMapping("/nickname")
     @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
