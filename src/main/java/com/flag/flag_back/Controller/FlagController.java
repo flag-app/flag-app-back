@@ -1,9 +1,6 @@
 package com.flag.flag_back.Controller;
 
-import com.flag.flag_back.Dto.CandidateRes;
-import com.flag.flag_back.Dto.FlagCellRes;
-import com.flag.flag_back.Dto.FlagDto;
-import com.flag.flag_back.Dto.FlagTimeTableRes;
+import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.Flag;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
@@ -14,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -126,11 +124,15 @@ public class FlagController {
 
     @GetMapping("/fixedlist") // 확정 list
     @Operation(summary = "flag 확정 list", description = "user의 플래그의 확정 리스트 반환")
-    public List<Flag> getFixFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
+    public List<FixedFlagRes> getFixFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-            return flagService.getFixedFlagList(user.getUserId());
+            List<FixedFlagRes> ret = new ArrayList<>();
+            List<Flag> temp = flagService.getFixedFlagList(user.getUserId());
+            for (Flag flag : temp) {
+                ret.add(flag.getName(), flag.g)
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

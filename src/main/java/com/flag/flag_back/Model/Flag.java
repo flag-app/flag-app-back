@@ -49,6 +49,10 @@ public class Flag {
         this.state = false;
     }
 
+    public boolean getState() {
+        return this.state;
+    }
+
     public void addUserFlagManager(UserFlagManager userFlagManager) {
         this.userFlagManagers.add(userFlagManager);
     }
@@ -91,10 +95,6 @@ public class Flag {
     @Column(name = "fixedDate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fixedDate;
-
-    public boolean getState() {
-        return state;
-    }
 
     // 모든 인원이 일정을 입력했다면 확정 가능
     public void checkState() {
