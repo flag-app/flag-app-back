@@ -62,7 +62,7 @@ public class UserService {
     @Transactional
     public Long join(User user) {
 
-        //validateDuplicateMember(user); //중복 회원 검증
+        validateDuplicateMember(user); //중복 회원 검증
         validateEmail(user);
         userRepository.save(user);
         return user.getUserId();
