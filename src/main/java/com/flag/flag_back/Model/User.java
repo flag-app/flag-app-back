@@ -33,8 +33,6 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    private String profile;
-
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
@@ -44,12 +42,11 @@ public class User implements UserDetails {
     private List<UserFlagManager> userFlagManagers = new ArrayList<>();
 
     @Builder
-    public User(Long id,String name, String email, String password, String profile) {
+    public User(Long id,String name, String email, String password) {
         this.userId = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.profile = profile;
     }
 
     @Override
