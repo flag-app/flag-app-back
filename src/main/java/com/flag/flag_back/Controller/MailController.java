@@ -52,7 +52,7 @@ public class MailController {
             sendPasswordResetEmail(user);
             return new BaseResponse<>(TEMP_PASSWORD_SENT);
         } else {
-            return new BaseResponse<>(NO_REGISTERED_USER);
+            return new BaseResponse<>(INVALID_USER);
 
         }
     }

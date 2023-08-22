@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.flag.flag_back.config.BaseResponseStatus.*;
@@ -95,11 +96,17 @@ public class UserController {
 
     //  @ResponseBody
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable("userId") Long id) {
+    public BaseResponse<String> getUser(@PathVariable("userId") Long id) {
         System.out.println(userRepository.findUserEntityByUserId(id));
 
         try {
-            return userService.findById(id);
+            String user = String.valueOf(userService.findById(id));
+
+            if (userService.findById(id) == null) {
+                return new BaseResponse<>(INVALID_USER);
+            }
+
+            return new BaseResponse<>(user);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -120,21 +127,37 @@ public class UserController {
 
     @PatchMapping("/nickname")
     @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
-    public UserRes updateName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newName) {
+    public BaseResponse<String> updateName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newName) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
+
             user.setName(newName);
             userService.save(user); // 새로운 이름으로 업데이트된 사용자 정보 저장
-            return new UserRes(user.getUserId());
+            String UserRes = String.valueOf(new UserRes(user.getUserId()));
+            return new BaseResponse<>(UserRes);//닉네임 변경 성공
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(NICKNAME_CHANGE_ERROR);//실패
+
         }
     }
+//    @PatchMapping("/nickname")
+//    @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
+//    public UserRes updateName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newName) {
+//        try {
+//            String email = jwtTokenProvider.getUserPk(token);
+//            User user = userRepository.findUserByEmail(email);
+//            user.setName(newName);
+//            userService.save(user); // 새로운 이름으로 업데이트된 사용자 정보 저장
+//            return new UserRes(user.getUserId());
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @PatchMapping("/profile")
     @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
-    public ResponseDto<String> updateProfile(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newProfile) {
+    public BaseResponse<String> updateProfile(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newProfile) {
         try {
             // 사용자 정보 가져오기
             String email = jwtTokenProvider.getUserPk(token);
@@ -142,36 +165,71 @@ public class UserController {
             // 새 프로필 정보로 업데이트
             user.setProfile(newProfile);
             userService.save(user);
-            return ResponseDto.success("프로필 변경 성공", null);
+            return new BaseResponse<>(PROFILE_SUCCESS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            return new BaseResponse<>(PROFILE_CHANGE_ERROR);        }
     }
+//    @PatchMapping("/profile")
+//    @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
+//    public ResponseDto<String> updateProfile(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newProfile) {
+//        try {
+//            // 사용자 정보 가져오기
+//            String email = jwtTokenProvider.getUserPk(token);
+//            User user = userRepository.findUserByEmail(email);
+//            // 새 프로필 정보로 업데이트
+//            user.setProfile(newProfile);
+//            userService.save(user);
+//            return ResponseDto.success("프로필 변경 성공", null);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @PatchMapping("/password/change")
-    @Operation(summary = "비밀번호 변경(Token)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
-    public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+    public BaseResponse<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
         try {
             // 사용자 정보 가져오기
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
 
-            // 기존 비밀번호와 새 비밀번호를 통해 비밀번호 변경 작업 수행
             boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getNewPassword());
 
             if (passwordChanged) {
-                return ResponseDto.success("비밀번호 변경 성공", null);
+                return new BaseResponse<>(PASSWORD_CHANGE_SUCCESS);
             } else {
-                return ResponseDto.fail(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패", null);
+                return new BaseResponse<>(PASSWORD_CHANGE_FAILURE);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @PatchMapping("/password-chage")
-    @Operation(summary = "비밀번호 변경(userId)", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
-    public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @NotBlank String newPassword) {
+//    @PatchMapping("/password/change")
+//    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+//    public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
+//        try {
+//            // 사용자 정보 가져오기
+//            String email = jwtTokenProvider.getUserPk(token);
+//            User user = userRepository.findUserByEmail(email);
+//
+//            // 기존 비밀번호와 새 비밀번호를 통해 비밀번호 변경 작업 수행
+//            boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getNewPassword());
+//
+//            if (passwordChanged) {
+//                return ResponseDto.success("비밀번호 변경 성공", null);
+//            } else {
+//                return ResponseDto.fail(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패", null);
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
+    @PatchMapping("/password-change")
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
+    public BaseResponse<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @NotBlank String newPassword) {
         try {
             // 사용자 정보 가져오기
             String email = jwtTokenProvider.getUserPk(token);
@@ -181,9 +239,9 @@ public class UserController {
             user.setPassword(newPassword);
             userService.save(user);
 
-            return ResponseDto.success("비밀번호 변경 성공", null);
+            return new BaseResponse<>(PASSWORD_CHANGE_SUCCESS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(PASSWORD_CHANGE_FAILURE);
         }
     }
 
@@ -206,16 +264,16 @@ public class UserController {
 
     @PostMapping("/checkName")
     @Operation(summary = "닉네임 중복 검사", description = "닉네임 중복 검증 API입니다.")
-    public String checkExistName(@RequestBody @NotBlank String name) {
+    public BaseResponse<String> checkExistName(@RequestBody @NotBlank String name) {
         try {
             System.out.println("name - " + name);
             // 이름을 이용하여 이메일 찾기
             User user = userRepository.findUserByName(name);
             //System.out.println("user - " + user.toString());
             if (user != null) {
-                return "이미 존재하는 닉네임입니다.";
+                return new BaseResponse<>(NICKNAME_ALREADY_EXISTS);//이미 존재하는 닉네임
             } else {
-                return "사용가능한 닉네임입니다.";
+                return new BaseResponse<>(NICKNAME_AVAILABLE);//사용가능한 닉네임
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -224,7 +282,7 @@ public class UserController {
 
     @PostMapping("/checkEmail")
     @Operation(summary = "이메일 중복 검사", description = "이메일 중복 검증 API입니다.")
-    public String checkExistEmail(@RequestBody @NotBlank String email) {
+    public BaseResponse<String> checkExistEmail(@RequestBody @NotBlank String email) {
         try {
             System.out.println("email - " + email);
             // 이름을 이용하여 이메일 찾기
@@ -232,9 +290,9 @@ public class UserController {
             User user = userRepository.findUserByEmail(email);
 
             if (user != null) {
-                return "이미 존재하는 이메일입니다.";
+                return new BaseResponse<>(EMAIL_ALREADY_EXISTS);//이미 존재하는 이메일
             } else {
-                return "사용가능한 이메일입니다.";
+                return new BaseResponse<>(EMAIL_AVAILABLE);//사용가능한 이메일
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -243,18 +301,22 @@ public class UserController {
 
     @DeleteMapping("/delete")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API입니다.")
-    public ResponseDto<String> deleteUser(@RequestHeader(value = "Authorization", required = false) String token) {
+    public BaseResponse<String> deleteUser(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
+
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                return new BaseResponse<>(INVALID_AUTHORIZATION_CODE); // 토큰이 없거나 유효하지 않을때
+            }
+
             // 사용자 정보 가져오기
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
 
             if (user != null) {
                 userService.deleteUser(user); // 사용자 정보 삭제
-
-                return ResponseDto.success("회원 탈퇴 성공", null);
+                return new BaseResponse<>(MEMBERSHIP_WITHDRAWAL_SUCCESS);//회원 탈퇴 성공
             } else {
-                return ResponseDto.fail(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.", null);
+                return new BaseResponse<>(INVALID_USER);//사용자를 찾을 수 없습니다
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -275,7 +337,14 @@ public class UserController {
             }
             return new MyPageRes(user.getEmail(), user.getName(), friendsName);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace(); // 예외 정보를 로그에 출력
+
+            String errorMessage = "마이페이지 정보를 가져오는 중에 오류가 발생했습니다.";
+            return MyPageRes.builder()
+                    .email("오류")
+                    .name("오류")
+                    .friends(Collections.emptyList())
+                    .build();
         }
     }
 }
