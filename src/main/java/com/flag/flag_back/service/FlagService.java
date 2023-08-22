@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @AllArgsConstructor
@@ -237,10 +238,21 @@ public class FlagService {
         for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
             Flag flag = userFlagManager.getFlag();
             if (flag.getFixedDate() != null) {
-                flags.add(new FixedFlagRes(flag.getId(), flag.getName(), flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(), flag.getPlace(), flag.getMemo(), flag.getFixedMembers()));
+                flags.add(new FixedFlagRes(flag.getId(), flag.getName(),
+                        flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(),
+                        flag.getPlace(), flag.getMemo(), flag.getFixedMembers(),
+                        getdDay(flag.getFixedDate())));
             }
         }
         return flags;
+    }
+
+    private String getdDay(LocalDate date) {
+        long restDay = ChronoUnit.DAYS.between(LocalDate.now(), date);
+        if (restDay == 0) {
+            return "D-DAY";
+        }
+        return "D-" + restDay;
     }
 
     public List<ProgressFlagRes> getProgressFlagList(Long userId) {
@@ -279,6 +291,8 @@ public class FlagService {
             throw new IllegalStateException();
         UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
         if (userFlagManager == null)
+            throw new IllegalStateException();
+        if (userFlagManager.getRole() == FlagRole.GUEST)
             throw new IllegalStateException();
         CandidateRes candidate = getCandidates(userId, flagId).get(index);
         flag.fixFlag(LocalDate.parse(candidate.getDate(), DateTimeFormatter.ISO_DATE), candidate.getStartTime(), candidate.getEndTime(), candidate.getCandidates());
