@@ -35,7 +35,10 @@ public class SecurityConfig {
                 .cors().and()
                 .authorizeRequests()
                 .antMatchers("/user/join", "/user/login", "user/checkName", "user/email-by-name", "user/password/change").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/checkName").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/checkEmail").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/reset-password").permitAll()
+
                 .antMatchers(HttpMethod.POST, "/user/**").authenticated()
                 .antMatchers("/test").authenticated()
                 .and()

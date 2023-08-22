@@ -13,6 +13,7 @@ public class UserResponse {
 
     public UserResponse() {
     }
+
     @Builder
     public UserResponse(long id, String name, String email, boolean existFriend) {
         this.id = id;
@@ -20,4 +21,6 @@ public class UserResponse {
         this.email = email;
         this.existFriend = existFriend;
     }
+
+
 }
