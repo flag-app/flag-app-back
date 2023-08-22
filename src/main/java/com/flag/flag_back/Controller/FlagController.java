@@ -137,7 +137,7 @@ public class FlagController {
     @Operation(summary = "flag 확정 list", description = "user의 플래그의 확정 리스트 반환")
     public List<FixedFlagRes> getFixFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
         if (token == null || !jwtTokenProvider.validateToken(token)) {
-            FixedFlagRes errorFlag = new FixedFlagRes(null, "Error", null, null, null, "올바른 Authorization인지 확인하세요.", "플래그의 확정 리스트 반환에 실패했습니다", null, null);
+            FixedFlagRes errorFlag = new FixedFlagRes(null, "Error", null, null, null, "올바른 Authorization인지 확인하세요.", "플래그의 확정 리스트 반환에 실패했습니다", null, null, null, -1);
             return Collections.singletonList(errorFlag);
         }
 
