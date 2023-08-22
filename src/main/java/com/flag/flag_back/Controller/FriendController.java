@@ -35,16 +35,24 @@ public class FriendController {
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
     public BaseResponse<String> getUsersList(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
         try {
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                return new BaseResponse<>(INVALID_AUTHORIZATION_CODE);
+            }
+
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             boolean exist = checkUser(token, name);
-            UserResponse users = userService.findListByName(name);
+
+            UserResponse users = null;
+            try {
+                users = userService.findListByName(name);
+            } catch (NullPointerException e) {
+                return new BaseResponse<>(NICKNAME_NOT_EXISTS);
+            }
             users.setExistFriend(exist);
-
             String valueOfuser = String.valueOf(users);
-            return new BaseResponse<>(valueOfuser);
 
-            //return users;
+            return new BaseResponse<>(valueOfuser);
         } catch (Exception e) {
             return new BaseResponse<>(NICKNAME_SEARCH_ERROR);
         }
@@ -54,11 +62,18 @@ public class FriendController {
     @Operation(summary = "친구 추가", description = "닉네임으로 친구 추가")
     public BaseResponse<String> addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
         try {
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                return new BaseResponse<>(INVALID_AUTHORIZATION_CODE);
+            }
+
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             User friend = userRepository.findUserByName(friendName);
 
-            if(checkUser(token, friend.getName()) == true){
+            if(friend == null)
+                return new BaseResponse<>(NICKNAME_NOT_EXISTS);
+
+            if (checkUser(token, friend.getName()) == true) {
                 return new BaseResponse<>(ALREADY_FRIEND);
             }
             Friend friendInfo = new Friend();
@@ -129,7 +144,7 @@ public class FriendController {
             User user = userRepository.findUserByEmail(email);
 
             return friendService.friendsListByNickName(user.getUserId(), name);
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // 친구 검색 중에 NullPointerException이 발생한 경우 처리
             e.printStackTrace();
             return UserResponse.builder()
@@ -150,7 +165,7 @@ public class FriendController {
     //친구 삭제
     @DeleteMapping("/delete")
     @Operation(summary = "친구 삭제", description = "친구 삭제 API")
-    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid Long fid) {
+    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid Long fid) {
 
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             Map<String, Object> invalidTokenResponse = new HashMap<>();
@@ -163,7 +178,7 @@ public class FriendController {
         User user = userRepository.findUserByEmail(email);
         Map<String, Object> response = new HashMap<>();
 
-        if(friendService.delete(user.getUserId(),fid) > 0) {
+        if (friendService.delete(user.getUserId(), fid) > 0) {
             response.put("result", "SUCCESS");
         } else {
             response.put("result", "FAIL");
