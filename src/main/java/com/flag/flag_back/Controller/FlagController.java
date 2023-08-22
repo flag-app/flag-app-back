@@ -4,6 +4,7 @@ import com.flag.flag_back.Dto.*;
 import com.flag.flag_back.Model.Flag;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
+import com.flag.flag_back.config.BaseResponse;
 import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.FlagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,9 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.flag.flag_back.config.BaseResponseStatus.*;
+import static com.flag.flag_back.config.BaseResponseStatus.FLAG_DELETE_FAIL;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("flag")
@@ -22,44 +26,44 @@ public class FlagController {
     private final FlagService flagService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-//
+
     @PostMapping("/add")
     @Operation(summary = "flag 생성", description = "flag 생성합니다.")
-    public String createFlag(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid FlagDto flagDto) {
+    public BaseResponse<String> createFlag(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid FlagDto flagDto) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             flagService.createFlag(flagDto, user);
+            return new BaseResponse<>(FLAG_CREATE_SUCCESS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(FLAG_CREATE_FAIL);
         }
-        return "redirect:/flag";
     }
 
     @DeleteMapping("/{flagId}")
     @Operation(summary = "flag 삭제", description = "flag를 삭제합니다.")
-    public String deleteFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
+    public BaseResponse<String> deleteFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             userRepository.findUserByEmail(email);
             flagService.deleteFlag(flagId);
-            return "Flag 삭제가 완료되었습니다.";
+            return new BaseResponse<>(FLAG_DELETE_SUCCESS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(FLAG_DELETE_FAIL);
         }
     }
 
     @PatchMapping("/{flagId}")
-    @Operation(summary = "flag 수정", description = "flag 정보((이름,장소,메모)를 수정합니다.")
-    public String updateFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @RequestBody @Valid FlagDto flagDto) {
+    @Operation(summary = "flag 수정", description = "flag 정보(이름,장소,메모)를 수정합니다.")
+    public BaseResponse<String> updateFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @RequestBody @Valid FlagDto flagDto) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             userRepository.findUserByEmail(email);
             System.out.print(flagDto);
             flagService.updateFlag(flagId, flagDto);
-            return "Flag 수정이 완료되었습니다.";
+            return new BaseResponse<>(FLAG_UPDARE_SUCCESS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new BaseResponse<>(FLAG_UPDARE_FAIL);
         }
     }
 
@@ -70,8 +74,7 @@ public class FlagController {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             return flagService.getFlagTimeTableRes(user.getUserId(), flagId);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -83,8 +86,7 @@ public class FlagController {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
             return flagService.getCandidates(user.getUserId(), flagId);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -109,6 +111,16 @@ public class FlagController {
             throw new RuntimeException(e);
         }
     }
+
+//    @GetMapping("/{flagId}/checkState") //확정 가능한 상태인지 검사.
+//    @Operation(summary = "flag 확정 가능여부", description = "모두 응답하여 플래그 확정 가능 여부 확인")
+//    public boolean checkState(@PathVariable("flagId") Long flagId) {
+//        try {
+//            return flagService.checkNonResponse(flagId);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @GetMapping("/{flagId}/fixed") //확정됐는지 아닌지 flag 확인- 호스트
     @Operation(summary = "flag 상태 반환", description = "플래그의 확정 / 진행 상태 반환")
@@ -177,7 +189,7 @@ public class FlagController {
             flagService.fixFlag(user.getUserId(), flagId, index);
             return "redirect:/";
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return "플래그 확정 중 오류가 발생했습니다.";
         }
     }
 }
