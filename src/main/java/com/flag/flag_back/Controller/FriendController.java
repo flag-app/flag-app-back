@@ -49,21 +49,6 @@ public class FriendController {
             return new BaseResponse<>(NICKNAME_SEARCH_ERROR);
         }
     }
-    //예외처리했는데 반환값 걸리는 부분 주석
-//    @PostMapping("/List") //닉네임으로 리스트 조회
-//    @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
-//    public UserResponse getUsersList(@RequestHeader(value = "Authorization", required = false) String token,  @RequestBody @Valid String name) {
-//        try {
-//            String email = jwtTokenProvider.getUserPk(token);
-//            User user = userRepository.findUserByEmail(email);
-//            boolean exist = checkUser(token, name);
-//            UserResponse users = userService.findListByName(name);
-//            users.setExistFriend(exist);
-//            return users;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     @PostMapping("/add")
     @Operation(summary = "친구 추가", description = "닉네임으로 친구 추가")
@@ -115,22 +100,15 @@ public class FriendController {
     public List<UserResponse> getFriendsList(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             if (token == null || !jwtTokenProvider.validateToken(token)) {
-                // 토큰이 없거나 유효하지 않은 경우 처리
-                return Collections.emptyList();
+                return Collections.singletonList(new UserResponse(-1, "토큰이 없거나 유효하지 않습니다.", null, false));
             }
-
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
 
-            if (user != null) {
-                return friendService.friendsListById(user.getUserId());
-            } else {
-                return Collections.emptyList(); // 사용자 정보를 찾을 수 없는 경우 처리
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // 예외 정보를 로그에 출력
+            return friendService.friendsListById(user.getUserId());
 
-            return Collections.emptyList();// 예외에 따라 적절한 동작을 수행
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
