@@ -1,14 +1,11 @@
 
 package com.flag.flag_back.Controller;
 
-import com.flag.flag_back.Dto.ResponseDto;
-import com.flag.flag_back.Dto.UserRes;
 import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.config.BaseResponse;
-import com.flag.flag_back.config.BaseResponseStatus;
 import com.flag.flag_back.jwt.JwtTokenProvider;
 import com.flag.flag_back.service.FriendService;
 import com.flag.flag_back.service.UserService;
@@ -93,9 +90,9 @@ public class FriendController {
     }
 
     //친구인지 아닌지 검사
-    @PostMapping("/checkFriendId") //닉네임으로 리스트 조회
+    @GetMapping("/checkFriendId") //닉네임으로 리스트 조회
     @Operation(summary = "친구 중복 검사", description = "친구인지 아닌지 검사")
-    public boolean checkUser(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
+    public boolean checkUser(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String friendName) {
         try {
             if (token == null || !jwtTokenProvider.validateToken(token)) {// 토큰이 없거나 유효하지 않은 경우 처리
                 return false;
