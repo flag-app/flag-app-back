@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class FixedFlagRes {
 
+    private Long id;
     private String name;
     private LocalDate date;
     private String startTime;
@@ -16,7 +17,8 @@ public class FixedFlagRes {
     private String memo;
     private List<String> members;
 
-    public FixedFlagRes(String name, LocalDate date, String startTime, String endTime, String place, String memo, List<String> members) {
+    public FixedFlagRes(Long id, String name, LocalDate date, String startTime, String endTime, String place, String memo, List<String> members) {
+        this.id = id;
         this.name = name;
         this.date = date;
         this.startTime = startTime;
