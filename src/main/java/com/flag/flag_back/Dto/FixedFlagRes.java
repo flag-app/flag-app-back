@@ -18,8 +18,10 @@ public class FixedFlagRes {
     private String memo;
     private List<String> members;
     private String dDay;
+    private String host;
+    private int count;
 
-    public FixedFlagRes(Long id, String name, LocalDate date, String startTime, String endTime, String place, String memo, List<String> members, String dDay) {
+    public FixedFlagRes(Long id, String name, LocalDate date, String startTime, String endTime, String place, String memo, List<String> members, String dDay, String host, int count) {
         this.id = id;
         this.title = "fixed";
         this.name = name;
@@ -30,5 +32,7 @@ public class FixedFlagRes {
         this.memo = memo;
         this.members = members;
         this.dDay = dDay;
+        this.host = host;
+        this.count = count;
     }
 }

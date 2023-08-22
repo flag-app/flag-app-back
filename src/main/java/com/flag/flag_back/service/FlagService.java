@@ -241,7 +241,8 @@ public class FlagService {
                 flags.add(new FixedFlagRes(flag.getId(), flag.getName(),
                         flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(),
                         flag.getPlace(), flag.getMemo(), flag.getFixedMembers(),
-                        getdDay(flag.getFixedDate())));
+                        getdDay(flag.getFixedDate()), flag.getUserFlagManagers().get(0).getUser().getName(),
+                        flag.getUserCount() - 1));
             }
         }
         return flags;
