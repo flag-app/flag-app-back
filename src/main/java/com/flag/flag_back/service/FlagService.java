@@ -237,7 +237,7 @@ public class FlagService {
         for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
             Flag flag = userFlagManager.getFlag();
             if (flag.getFixedDate() != null) {
-                flags.add(new FixedFlagRes(flag.getName(), flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(), flag.getPlace(), flag.getMemo(), flag.getFixedMembers()));
+                flags.add(new FixedFlagRes(flag.getId(), flag.getName(), flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(), flag.getPlace(), flag.getMemo(), flag.getFixedMembers()));
             }
         }
         return flags;
@@ -249,7 +249,7 @@ public class FlagService {
         for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
             if (userFlagManager.getFlag().getFixedDate() == null) {
                 Flag flag = userFlagManager.getFlag();
-                flags.add(new ProgressFlagRes(flag.getName(), flag.getPlace(), flag.getUserFlagManagers().get(0).getUser().getName(), flag.getUserCount()));
+                flags.add(new ProgressFlagRes(flag.getId(), flag.getName(), flag.getPlace(), flag.getUserFlagManagers().get(0).getUser().getName(), flag.getUserCount()));
             }
         }
         return flags;
