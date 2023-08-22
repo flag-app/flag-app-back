@@ -1,12 +1,13 @@
-package com.flag.flag_back.Dto;
+package com.flag.flag_back.Model;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-public class FixedFlagRes {
+
+@Getter
+public class FixFlag {
 
     private String name;
     private LocalDate date;
@@ -16,7 +17,7 @@ public class FixedFlagRes {
     private String memo;
     private List<String> members;
 
-    public FixedFlagRes(String name, LocalDate date, String startTime, String endTime, String place, String memo, List<String> members) {
+    public FixFlag(String name, LocalDate date, String startTime, String endTime, String place, String memo, List<String> members) {
         this.name = name;
         this.date = date;
         this.startTime = startTime;
