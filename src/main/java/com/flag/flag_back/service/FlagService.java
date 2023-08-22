@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
 @AllArgsConstructor
 @Service
 public class FlagService {
@@ -70,7 +73,7 @@ public class FlagService {
         }
     }
 
-    @Transactional
+    /*@Transactional
     public String updateFlagState(Long flagId, String date) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag != null) {
@@ -95,7 +98,7 @@ public class FlagService {
         } else {
             throw new RuntimeException("Flag not found with id: " + flagId);
         }
-    }
+    }*/
 
     @Transactional
     public Flag getFlag(Long flagId) {
@@ -145,11 +148,10 @@ public class FlagService {
         for (int i = 0; i < standardIndex; i++) {
 
             // 한 날짜의 모든 시간대를 탐색
-            for (int startIndex = standardIndex + i; startIndex <  standardIndex * 13;) {
+            for (int startIndex = standardIndex + i; startIndex < standardIndex * 13; ) {
                 HashSet<Long> init = new HashSet<>(getAvailableMember(flag, startIndex));
 
-                if (init.isEmpty())
-                {
+                if (init.isEmpty()) {
                     startIndex += standardIndex;
                     continue;
                 }
@@ -158,7 +160,7 @@ public class FlagService {
                 int currentIndex = startIndex + standardIndex;
                 int standardSize = init.size();
 
-                while(currentIndex <  standardIndex * 13) {
+                while (currentIndex < standardIndex * 13) {
                     List<Long> candidate = getAvailableMember(flag, currentIndex);
 
                     // 1차로 인원 수 비교
@@ -229,24 +231,28 @@ public class FlagService {
         return null;
     }
 
-    public List<Flag> getFixedFlagList(Long id) {
-        List<Flag> flags = flagRepository.findFlagByState(id);
-        //System.out.println("flag list - " + flags.toString());
-        if (flags.isEmpty()) {
-            System.out.println("null");
-            return null;
+    public List<FixedFlagRes> getFixedFlagList(Long userId) {
+        User user = userRepository.findUserEntityByUserId(userId);
+        List<FixedFlagRes> flags = new ArrayList<>();
+        for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
+            Flag flag = userFlagManager.getFlag();
+            if (flag.getFixedDate() != null) {
+                flags.add(new FixedFlagRes(flag.getName(), flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(), flag.getPlace(), flag.getMemo(), flag.getFixedMembers()));
+            }
         }
         return flags;
     }
 
-    public List<Flag> getProgressFlagList(Long id) {
-        List<Flag> flags2 = flagRepository.findFlagByState2(id);
-        //System.out.println("flag list - " + flags.toString());
-        if (flags2.isEmpty()) {
-            System.out.println("null");
-            return null;
+    public List<ProgressFlagRes> getProgressFlagList(Long userId) {
+        User user = userRepository.findUserEntityByUserId(userId);
+        List<ProgressFlagRes> flags = new ArrayList<>();
+        for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
+            if (userFlagManager.getFlag().getFixedDate() == null) {
+                Flag flag = userFlagManager.getFlag();
+                flags.add(new ProgressFlagRes(flag.getName(), flag.getPlace(), flag.getUserFlagManagers().get(0).getUser().getName(), flag.getUserCount()));
+            }
         }
-        return flags2;
+        return flags;
     }
 
     public boolean checkNonResponse(Long id) {
@@ -255,17 +261,17 @@ public class FlagService {
         if (flag != null) {
             System.out.println("resX" + flag.get().getNonResponseUsers().toString());
             System.out.println("res0" + flag.get().getAcceptUsers().toString());
-           if(flag.get().getNonResponseUsers().isEmpty()) {
-               return true;
-           }
-           return false;
+            if (flag.get().getNonResponseUsers().isEmpty()) {
+                return true;
+            }
+            return false;
         }
 
         return false;
     }
 
     @Transactional
-    public void fixFlag(Long userId, Long flagId, int index) throws ParseException {
+    public void fixFlag(Long userId, Long flagId, int index) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag == null)
             throw new IllegalStateException();
@@ -274,9 +280,7 @@ public class FlagService {
         UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
         if (userFlagManager == null)
             throw new IllegalStateException();
-        List<CandidateRes> candidates = getCandidates(userId, flagId);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        flag.setFixedDate(formatter.parse(candidates.get(index).getDate()));
-        System.out.println(flag.getFixedDate());
+        CandidateRes candidate = getCandidates(userId, flagId).get(index);
+        flag.fixFlag(LocalDate.parse(candidate.getDate(), DateTimeFormatter.ISO_DATE), candidate.getStartTime(), candidate.getEndTime(), candidate.getCandidates());
     }
 }

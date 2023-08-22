@@ -3,9 +3,12 @@ package com.flag.flag_back.Model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static javax.persistence.FetchType.LAZY;
 
 @NoArgsConstructor
 @Data
@@ -29,8 +32,14 @@ public class Flag {
     private String place;
     @Column(name = "memo")
     private String memo;
-    @Column(name = "state")
+    @Column(name = "state") // 확정 가능 여부 (모든 사람들이 자신의 일정을 입력했을 때 true로 바뀜)
     private boolean state;
+    private LocalDate fixedDate;
+    private String startTime;
+    private String endTime;
+
+    @ElementCollection
+    private List<String> fixedMembers;
 
     @ElementCollection
     private List<String> dates;
@@ -47,6 +56,7 @@ public class Flag {
         this.memo = memo;
         this.dates = dates;
         this.state = false;
+        this.fixedDate = null;
     }
 
     public boolean getState() {
@@ -92,10 +102,6 @@ public class Flag {
         return ret;
     }
 
-    @Column(name = "fixedDate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fixedDate;
-
     // 모든 인원이 일정을 입력했다면 확정 가능
     public void checkState() {
         for (UserFlagManager userFlagManager : userFlagManagers) {
@@ -104,5 +110,12 @@ public class Flag {
             }
         }
         this.state = true;
+    }
+
+    public void fixFlag(LocalDate fixedDate, String startTime, String endTime, List<String> fixedMembers) {
+        this.fixedDate = fixedDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.fixedMembers = fixedMembers;
     }
 }

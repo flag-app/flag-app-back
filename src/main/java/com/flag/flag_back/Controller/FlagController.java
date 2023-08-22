@@ -88,7 +88,7 @@ public class FlagController {
             throw new RuntimeException(e);
         }
     }
-    @PatchMapping("/{flagId}/updateState") //확정으로 변경
+    /*@PatchMapping("/{flagId}/updateState") //확정으로 변경
     @Operation(summary = "flag 상태 변경", description = "플래그의 확정 / 확정 시간 저장")
     public String updateState(@PathVariable("flagId") Long flagId, @RequestBody @Valid String date) {
         try {
@@ -97,7 +97,7 @@ public class FlagController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 
     @GetMapping("/{flagId}/checkState") //확정 가능한 상태인지 검사.
@@ -128,12 +128,7 @@ public class FlagController {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-            List<FixedFlagRes> ret = new ArrayList<>();
-            List<Flag> temp = flagService.getFixedFlagList(user.getUserId());
-            for (Flag flag : temp) {
-                //ret.add(flag.getName(), flag.g)
-            }
-            return ret;
+            return flagService.getFixedFlagList(user.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -141,7 +136,7 @@ public class FlagController {
 
     @GetMapping("/progresslist") // 진행 list
     @Operation(summary = "flag 진행 list", description = "user의 플래그의 진행 리스트 반환")
-    public List<Flag> getProgressFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
+    public List<ProgressFlagRes> getProgressFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
