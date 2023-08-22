@@ -7,7 +7,7 @@ public enum BaseResponseStatus {
 
     /*Common */
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
-    INVALID_AUTHORIZATION_CODE(false, 1001, "유효하지 않은 Authorization code입니다."),
+    INVALID_AUTHORIZATION_CODE(false, 1001, "유효하지 않은 Authorization입니다."),
 
     /*user */
     INVALID_USER(false, 1002, "등록되지 않은 사용자입니다."),
@@ -40,7 +40,7 @@ public enum BaseResponseStatus {
     FLAG_DELETE_SUCCESS(true, 4003, "플래그 삭제에 성공했습니다."),
     FLAG_DELETE_FAIL(true, 4004, "플래그 삭제에 실패했습니다."),
     FLAG_UPDARE_SUCCESS(true, 4005, "플래그 수정에 성공했습니다."),
-    FLAG_UPDARE_FAIL(true, 6006, "플래그 수정에 실패했습니다."),
+    FLAG_UPDARE_FAIL(true, 4006, "플래그 수정에 실패했습니다."),
 
     /*ufm*/
     ADD_GUEST(true, 5001, "GUEST가 초대된 FLAG 수락했습니다."),
@@ -57,3 +57,5 @@ public enum BaseResponseStatus {
     }
 
 }
+
+
