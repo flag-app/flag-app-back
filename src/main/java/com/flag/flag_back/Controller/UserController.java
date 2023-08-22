@@ -24,7 +24,7 @@ import java.util.List;
 
 import static com.flag.flag_back.config.BaseResponseStatus.*;
 
-@Api(tags = "User Controller", value = "회원 정보 관리 기능 구현한 User Controller 입니다.")
+@Api(tags = "user-controller", value = "회원 정보 관리 기능 구현한 User Controller 입니다.")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -81,19 +81,6 @@ public class UserController {
         }
     }
 
-    //    @Operation(summary = "회원가입", description = "회원가입 API")
-//    @PostMapping("/join")
-//    public UserRes create(@Parameter(description = "회원 ID", required = true, example = "1") @RequestBody @Valid UserInfo request) {
-//        User user = new User();
-//        user.setName(request.getName());
-//        user.setEmail(request.getEmail());
-//        user.setPassword(request.getPassword());
-//        user.setProfile(request.getProfile());
-//
-//        Long id = userService.join(user);
-//        return new UserRes(id);
-//    }
-
     //  @ResponseBody
     @GetMapping("/{userId}")
     public BaseResponse<String> getUser(@PathVariable("userId") Long id) {
@@ -112,19 +99,6 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/{userId}")
-//    public User getUser(@PathVariable("userId") Long id) {
-//        System.out.println(userRepository.findUserEntityByUserId(id));
-//
-//        try {
-//            return userService.findById(id);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-
-
     @PatchMapping("/nickname")
     @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
     public BaseResponse<String> updateName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newName) {
@@ -141,19 +115,6 @@ public class UserController {
 
         }
     }
-//    @PatchMapping("/nickname")
-//    @Operation(summary = "닉네임 변경", description = "닉네임 변경 api입니다.")
-//    public UserRes updateName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newName) {
-//        try {
-//            String email = jwtTokenProvider.getUserPk(token);
-//            User user = userRepository.findUserByEmail(email);
-//            user.setName(newName);
-//            userService.save(user); // 새로운 이름으로 업데이트된 사용자 정보 저장
-//            return new UserRes(user.getUserId());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     @PatchMapping("/profile")
     @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
@@ -169,21 +130,6 @@ public class UserController {
         } catch (Exception e) {
             return new BaseResponse<>(PROFILE_CHANGE_ERROR);        }
     }
-//    @PatchMapping("/profile")
-//    @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
-//    public ResponseDto<String> updateProfile(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newProfile) {
-//        try {
-//            // 사용자 정보 가져오기
-//            String email = jwtTokenProvider.getUserPk(token);
-//            User user = userRepository.findUserByEmail(email);
-//            // 새 프로필 정보로 업데이트
-//            user.setProfile(newProfile);
-//            userService.save(user);
-//            return ResponseDto.success("프로필 변경 성공", null);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     @PatchMapping("/password/change")
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
@@ -204,28 +150,6 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
-
-//    @PatchMapping("/password/change")
-//    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
-//    public ResponseDto<String> updatePassword(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
-//        try {
-//            // 사용자 정보 가져오기
-//            String email = jwtTokenProvider.getUserPk(token);
-//            User user = userRepository.findUserByEmail(email);
-//
-//            // 기존 비밀번호와 새 비밀번호를 통해 비밀번호 변경 작업 수행
-//            boolean passwordChanged = userService.changePassword(user, changePasswordRequestDto.getNewPassword());
-//
-//            if (passwordChanged) {
-//                return ResponseDto.success("비밀번호 변경 성공", null);
-//            } else {
-//                return ResponseDto.fail(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패", null);
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
 
     @PatchMapping("/password-change")
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API 입니다. 새 비밀번호를 요청 값으로 받습니다.")
