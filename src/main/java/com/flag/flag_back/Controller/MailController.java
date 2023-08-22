@@ -19,7 +19,6 @@ import java.security.SecureRandom;
 
 import static com.flag.flag_back.config.BaseResponseStatus.*;
 
-@Api(description = "비밀번호 재발급 구현한 Mail Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("user")

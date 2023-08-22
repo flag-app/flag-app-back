@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum BaseResponseStatus {
 
+    /*Common */
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
     INVALID_AUTHORIZATION_CODE(false, 1001, "유효하지 않은 Authorization code입니다."),
-
 
     /*user */
     INVALID_USER(false, 1002, "등록되지 않은 사용자입니다."),
@@ -35,23 +35,16 @@ public enum BaseResponseStatus {
     ADD_FRIEND_ERROR(false, 3003, "친구 추가 중 오류가 발생했습니다."),
 
     /*flag*/
-    ADD_GUEST(true, 4001, "GUEST가 초대된 FLAG 수락했습니다."),
-    ADD_GUEST_ERROR(false, 3003, "QUEST 정보 입력 실패했습니다.");
+    FLAG_CREATE_SUCCESS(true, 4001, "플래그 생성이 완료되었습니다."),
+    FLAG_CREATE_FAIL(false, 4002, "플래그 생성이 실패했습니다."),
+    FLAG_DELETE_SUCCESS(true, 4003, "플래그 삭제에 성공했습니다."),
+    FLAG_DELETE_FAIL(true, 4004, "플래그 삭제에 실패했습니다."),
+    FLAG_UPDARE_SUCCESS(true, 4005, "플래그 수정에 성공했습니다."),
+    FLAG_UPDARE_FAIL(true, 6006, "플래그 수정에 실패했습니다."),
 
-    //1000 : 요청 성공
-
-    //2000 : Request 오류
-        //// Common
-        //login
-
-    //3000 : Response 오류
-        // Common
-
-    //4000 : Database, Server 오류
-
-    //5000 :
-
-    //6000 :
+    /*ufm*/
+    ADD_GUEST(true, 5001, "GUEST가 초대된 FLAG 수락했습니다."),
+    ADD_GUEST_ERROR(false, 5002, "QUEST 정보 입력 실패했습니다.");
 
     private final boolean isSuccess;
     private final int code;
