@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,7 +69,6 @@ public class UserController {
             user.setName(request.getName());
             user.setEmail(request.getEmail());
             user.setPassword(request.getPassword());
-            user.setProfile(request.getProfile());
 
             Long id = userService.join(user);
             String userRes = String.valueOf(new UserRes(id));
@@ -114,21 +112,6 @@ public class UserController {
             return new BaseResponse<>(NICKNAME_CHANGE_ERROR);//실패
 
         }
-    }
-
-    @PatchMapping("/profile")
-    @Operation(summary = "프로필 변경", description = "프로필 변경 API입니다.")
-    public BaseResponse<String> updateProfile(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody String newProfile) {
-        try {
-            // 사용자 정보 가져오기
-            String email = jwtTokenProvider.getUserPk(token);
-            User user = userRepository.findUserByEmail(email);
-            // 새 프로필 정보로 업데이트
-            user.setProfile(newProfile);
-            userService.save(user);
-            return new BaseResponse<>(PROFILE_SUCCESS);
-        } catch (Exception e) {
-            return new BaseResponse<>(PROFILE_CHANGE_ERROR);        }
     }
 
     @PatchMapping("/password/change")
