@@ -6,6 +6,7 @@ import lombok.Data;
 public class ProgressFlagRes {
 
     Long id;
+    private String title;
     private String name;
     private String place;
     private String host;
@@ -13,6 +14,7 @@ public class ProgressFlagRes {
 
     public ProgressFlagRes(Long id, String name, String place, String host, int count) {
         this.id = id;
+        this.title = "progress";
         this.name = name;
         this.place = place;
         this.host = host;
