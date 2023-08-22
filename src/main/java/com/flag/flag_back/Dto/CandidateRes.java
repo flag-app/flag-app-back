@@ -12,6 +12,7 @@ public class CandidateRes {
     private String endTime;
     private int timeSize;
     private List<String> candidates;
+    private int cnt;
 
     public CandidateRes(String date, String startTime, String endTime, int timeSize, List<String> candidates) {
         this.date = date;
@@ -19,5 +20,6 @@ public class CandidateRes {
         this.endTime = endTime;
         this.timeSize = timeSize;
         this.candidates = candidates;
+        this.cnt = candidates.size();
     }
 }
