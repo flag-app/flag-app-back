@@ -4,6 +4,7 @@ package com.flag.flag_back.Controller;
 import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
+import com.flag.flag_back.Repository.FriendNameRepository;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.config.BaseResponse;
 import com.flag.flag_back.jwt.JwtTokenProvider;
@@ -31,9 +32,11 @@ public class FriendController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
+    private final FriendNameRepository friendNameRepository;
+
     @PostMapping("/List") //닉네임으로 리스트 조회
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
-    public BaseResponse<String> getUsersList(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
+    public BaseResponse<String> getUsersList(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("name") String name) {
         try {
             if (token == null || !jwtTokenProvider.validateToken(token)) {
                 return new BaseResponse<>(INVALID_AUTHORIZATION_CODE);
