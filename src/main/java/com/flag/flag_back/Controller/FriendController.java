@@ -165,7 +165,7 @@ public class FriendController {
     //친구 삭제
     @DeleteMapping("/delete")
     @Operation(summary = "친구 삭제", description = "친구 삭제 API")
-    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid Long fid) {
+    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
 
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             Map<String, Object> invalidTokenResponse = new HashMap<>();
@@ -178,7 +178,7 @@ public class FriendController {
         User user = userRepository.findUserByEmail(email);
         Map<String, Object> response = new HashMap<>();
 
-        if (friendService.delete(user.getUserId(), fid) > 0) {
+        if (friendService.delete(user.getUserId(), name) > 0) {
             response.put("result", "SUCCESS");
         } else {
             response.put("result", "FAIL");
