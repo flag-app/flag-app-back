@@ -56,12 +56,11 @@ public class FlagController {
 
     @PatchMapping("/{flagId}")
     @Operation(summary = "flag 수정", description = "flag 정보(이름,장소,메모)를 수정합니다.")
-    public BaseResponse<String> updateFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @RequestBody @Valid FlagDto flagDto) {
+    public BaseResponse<String> updateFlag(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId, @RequestBody @Valid FlagEditReq flagEditReq) {
         try {
             String email = jwtTokenProvider.getUserPk(token);
             userRepository.findUserByEmail(email);
-            System.out.print(flagDto);
-            flagService.updateFlag(flagId, flagDto);
+            flagService.updateFlag(flagId, flagEditReq);
             return new BaseResponse<>(FLAG_UPDARE_SUCCESS);
         } catch (Exception e) {
             return new BaseResponse<>(FLAG_UPDARE_FAIL);

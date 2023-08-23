@@ -59,13 +59,13 @@ public class FlagService {
     }
 
     @Transactional
-    public void updateFlag(Long flagId, FlagDto flagDto) {
+    public void updateFlag(Long flagId, FlagEditReq flagEditReq) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag != null) {
             // Update the flag information based on the flagDto
-            flag.setName(flagDto.getName());
-            flag.setPlace(flagDto.getPlace());
-            flag.setMemo(flagDto.getMemo());
+            flag.setName(flagEditReq.getName());
+            flag.setPlace(flagEditReq.getPlace());
+            flag.setMemo(flagEditReq.getMemo());
 
             // Save the updated flag to the database
             flagRepository.save(flag);
