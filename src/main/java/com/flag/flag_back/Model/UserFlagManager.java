@@ -36,7 +36,7 @@ public class UserFlagManager {
     @Enumerated(EnumType.STRING)
     private FlagRole role;
 
-    // 수락, 대기, 거절 여부의 enum
+    // 수락, 대기 여부의 enum
     @Enumerated(EnumType.STRING)
     private FlagStatus status;
 

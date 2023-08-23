@@ -151,11 +151,23 @@ public class FlagController {
         }
     }
 
+    @PostMapping("/{flagId}/cellInfo")
+    @Operation(summary = "flag 셀 정보", description = "flagId를 입력받고 셀 정보를 반환합니다.")
+    public List<Integer> getCellInfo(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
+        try {
+            String email = jwtTokenProvider.getUserPk(token);
+            User user = userRepository.findUserByEmail(email);
+            return flagService.getFlagInfo(user.getUserId(), flagId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @GetMapping("/progresslist") // 진행 list
     @Operation(summary = "flag 진행 list", description = "user의 플래그의 진행 리스트 반환")
     public List<ProgressFlagRes> getProgressFlagList(@RequestHeader(value = "Authorization", required = false) String token) {
         if (token == null || !jwtTokenProvider.validateToken(token)) {
-            ProgressFlagRes errorFlag = new ProgressFlagRes(null, "플래그의 진행 리스트 반환에 실패했습니다.", "올바른 Authorization인지 확인하세요.", null, 0);
+            ProgressFlagRes errorFlag = new ProgressFlagRes(null, "플래그의 진행 리스트 반환에 실패했습니다.", "올바른 Authorization인지 확인하세요.", null, 0, null, false);
             return Collections.singletonList(errorFlag);
         }
         try {
