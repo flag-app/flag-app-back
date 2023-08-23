@@ -248,13 +248,15 @@ public class FlagService {
         List<FixedFlagRes> flags = new ArrayList<>();
         for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
             Flag flag = userFlagManager.getFlag();
-            if (flag.getFixedDate() != null) {
-                flags.add(new FixedFlagRes(flag.getId(), flag.getName(),
-                        flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(),
-                        flag.getPlace(), flag.getMemo(), flag.getFixedMembers(),
-                        getdDay(flag.getFixedDate()), flag.getUserFlagManagers().get(0).getUser().getName(),
-                        flag.getUserCount() - 1));
-            }
+            if (flag.getFixedDate() == null)
+                continue;
+            if (ChronoUnit.DAYS.between(LocalDate.now(), flag.getFixedDate()) < 0)
+                continue;
+            flags.add(new FixedFlagRes(flag.getId(), flag.getName(),
+                    flag.getFixedDate(), flag.getStartTime(), flag.getEndTime(),
+                    flag.getPlace(), flag.getMemo(), flag.getFixedMembers(),
+                    getdDay(flag.getFixedDate()), flag.getUserFlagManagers().get(0).getUser().getName(),
+                    flag.getUserCount() - 1));
         }
         return flags;
     }
@@ -273,15 +275,25 @@ public class FlagService {
         for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
             if (userFlagManager.getFlag().getFixedDate() == null) {
                 Flag flag = userFlagManager.getFlag();
-                boolean check = false;
-                if (userFlagManager.getStatus() == FlagStatus.ACCEPT)
-                    check = true;
+                if (!checkRestDay(flag.getDates())) {
+                    continue;
+                }
+                boolean check = (userFlagManager.getStatus() == FlagStatus.ACCEPT);
                 flags.add(new ProgressFlagRes(flag.getId(), flag.getName(), flag.getPlace(),
                         flag.getUserFlagManagers().get(0).getUser().getName(), flag.getUserCount(),
                         userFlagManager.getRole(), check));
             }
         }
         return flags;
+    }
+
+    private boolean checkRestDay(List<String> dates) {
+        for (String date : dates) {
+            if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.parse(date)) >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean checkNonResponse(Long id) {
