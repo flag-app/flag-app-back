@@ -151,7 +151,7 @@ public class FlagController {
         }
     }
 
-    @PostMapping("/{flagId}/cellInfo")
+    @GetMapping("/{flagId}/cellInfo")
     @Operation(summary = "flag 셀 정보", description = "flagId를 입력받고 셀 정보를 반환합니다.")
     public List<Integer> getCellInfo(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("flagId") Long flagId) {
         try {
