@@ -171,7 +171,7 @@ public class UserController {
 
     @PostMapping("/checkName")
     @Operation(summary = "닉네임 중복 검사", description = "닉네임 중복 검증 API입니다.")
-    public BaseResponse<String> checkExistName(@RequestBody @NotBlank String name) {
+    public BaseResponse<String> checkExistName(@RequestParam("name")  String name) {
         try {
             System.out.println("name - " + name);
             // 이름을 이용하여 이메일 찾기
@@ -189,7 +189,7 @@ public class UserController {
 
     @PostMapping("/checkEmail")
     @Operation(summary = "이메일 중복 검사", description = "이메일 중복 검증 API입니다.")
-    public BaseResponse<String> checkExistEmail(@RequestBody @NotBlank String email) {
+    public BaseResponse<String> checkExistEmail(@RequestParam("email") String email) {
         try {
             System.out.println("email - " + email);
             // 이름을 이용하여 이메일 찾기
