@@ -107,6 +107,17 @@ public class FlagService {
     }
 
     @Transactional
+    public List<Integer> getFlagInfo(Long userId, Long flagId) {
+        Flag flag = flagRepository.findById(flagId).orElse(null);
+        if (flag == null)
+            throw new IllegalStateException();
+        UserFlagManager userFlagManager = userFlagManagerService.findUserFlagManager(userId, flagId);
+        if (userFlagManager == null)
+            throw new IllegalStateException();
+        return userFlagManager.addAbleCellIndex();
+    }
+
+    @Transactional
     public FlagCellRes getFlagCellRes(Long userId, Long flagId, int index) {
         Flag flag = flagRepository.findById(flagId).orElse(null);
         if (flag == null)
@@ -262,7 +273,12 @@ public class FlagService {
         for (UserFlagManager userFlagManager : user.getUserFlagManagers()) {
             if (userFlagManager.getFlag().getFixedDate() == null) {
                 Flag flag = userFlagManager.getFlag();
-                flags.add(new ProgressFlagRes(flag.getId(), flag.getName(), flag.getPlace(), flag.getUserFlagManagers().get(0).getUser().getName(), flag.getUserCount()));
+                boolean check = false;
+                if (userFlagManager.getStatus() == FlagStatus.ACCEPT)
+                    check = true;
+                flags.add(new ProgressFlagRes(flag.getId(), flag.getName(), flag.getPlace(),
+                        flag.getUserFlagManagers().get(0).getUser().getName(), flag.getUserCount(),
+                        userFlagManager.getRole(), check));
             }
         }
         return flags;
