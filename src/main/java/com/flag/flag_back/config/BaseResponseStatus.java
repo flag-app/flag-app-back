@@ -34,6 +34,7 @@ public enum BaseResponseStatus {
     ALREADY_FRIEND(true, 3002, "이미 친구입니다."),
     ADD_FRIEND_ERROR(false, 3003, "친구 추가 중 오류가 발생했습니다."),
     NICKNAME_NOT_EXISTS(false, 3004, "존재하지 않는 닉네임입니다."),
+    DO_NOT_SELF_ADD(false, 3005, "자기 자신을 친구 추가하지 마세요."),
 
     /*flag*/
     FLAG_CREATE_SUCCESS(true, 4001, "플래그 생성이 완료되었습니다."),

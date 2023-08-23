@@ -102,6 +102,9 @@ public class FriendController {
             if(friend == null)
                 return new BaseResponse<>(NICKNAME_NOT_EXISTS);
 
+            if (friend.equals(user))
+                return new BaseResponse<>(DO_NOT_SELF_ADD);
+
             if (checkUser(token, friend.getName()) == true) {
                 return new BaseResponse<>(ALREADY_FRIEND);
             }
