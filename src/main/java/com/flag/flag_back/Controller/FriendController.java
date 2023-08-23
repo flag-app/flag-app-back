@@ -4,7 +4,7 @@ package com.flag.flag_back.Controller;
 import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
-import com.flag.flag_back.Repository.FriendNameRepository;
+import com.flag.flag_back.Repository.FriendJpaRepository;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.config.BaseResponse;
 import com.flag.flag_back.jwt.JwtTokenProvider;
@@ -32,7 +32,7 @@ public class FriendController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    private final FriendNameRepository friendNameRepository;
+    private final FriendJpaRepository friendRepository;
 
     @PostMapping("/List") //닉네임으로 리스트 조회
     @Operation(summary = "닉네임 검색", description = "닉네임으로 유저 검색")
