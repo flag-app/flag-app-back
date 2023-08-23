@@ -12,4 +12,8 @@ public interface FriendJpaRepository extends JpaRepository<Friend, Long> {
     Friend findUserEntityByUserIdAndUserId2(Long userId, Long userId2);
     @Query(value = "select DISTINCT c from Friend c")
     List<Friend> findByUserId(Long id);
+
+//    @Query("SELECT u, f FROM User u LEFT JOIN Friend f ON u.userId = f.userId2")
+//    List<Friend> findFriendAll();
+
 }

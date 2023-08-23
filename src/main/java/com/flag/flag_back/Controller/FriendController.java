@@ -5,6 +5,7 @@ import com.flag.flag_back.Dto.UserResponse;
 import com.flag.flag_back.Model.Friend;
 import com.flag.flag_back.Model.User;
 import com.flag.flag_back.Repository.FriendJpaRepository;
+import com.flag.flag_back.Repository.FriendNameRepository;
 import com.flag.flag_back.Repository.UserRepository;
 import com.flag.flag_back.config.BaseResponse;
 import com.flag.flag_back.jwt.JwtTokenProvider;
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +32,7 @@ public class FriendController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
+    private final FriendNameRepository friendNameRepository;
     private final FriendJpaRepository friendRepository;
 
     @PostMapping("/List") //닉네임으로 리스트 조회
@@ -60,10 +61,35 @@ public class FriendController {
             return new BaseResponse<>(NICKNAME_SEARCH_ERROR);
         }
     }
+//
+//    @PostMapping("/list/all") //전체 리스트
+//    @Operation(summary = "전체 친구 리스트", description = "전체 친구 리스트 반환")
+//    public List<FriendName> getFriendsNameAllList(@RequestHeader(value = "Authorization", required = false) String token) {
+//        try {
+//            List<FriendName> friendAll = friendNameRepository.findFriendAll();
+//
+//            return friendAll;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//
+//    @GetMapping("/flist/all") //전체 리스트
+//    @Operation(summary = "전체 친구 리스트", description = "전체 친구 리스트 반환")
+//    public List<Friend> getFriendsAllList(@RequestHeader(value = "Authorization", required = false) String token) {
+//        try {
+//            List<Friend> friendAll = friendRepository.findFriendAll();
+//
+//            return friendAll;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @PostMapping("/add")
     @Operation(summary = "친구 추가", description = "닉네임으로 친구 추가")
-    public BaseResponse<String> addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String friendName) {
+    public BaseResponse<String> addFriend(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("friendName") String friendName) {
         try {
             if (token == null || !jwtTokenProvider.validateToken(token)) {
                 return new BaseResponse<>(INVALID_AUTHORIZATION_CODE);
@@ -95,7 +121,7 @@ public class FriendController {
     //친구인지 아닌지 검사
     @GetMapping("/checkFriendId") //닉네임으로 리스트 조회
     @Operation(summary = "친구 중복 검사", description = "친구인지 아닌지 검사")
-    public boolean checkUser(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String friendName) {
+    public boolean checkUser(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("friendName") String friendName) {
         try {
             if (token == null || !jwtTokenProvider.validateToken(token)) {// 토큰이 없거나 유효하지 않은 경우 처리
                 return false;
@@ -133,7 +159,7 @@ public class FriendController {
     //내 친구 내에서 검색 - select문을 - where userid = user2Id where userid1 =  myId
     @PostMapping("/friendList/name") //닉네임으로 리스트 조회
     @Operation(summary = "친구 내에서 닉네임 검색", description = "내 친구 리스트에서 닉네임으로 친구 검색")
-    public UserResponse searchFriendsList(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
+    public UserResponse searchFriendsList(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("name") String name) {
         try {
             if (token == null || !jwtTokenProvider.validateToken(token)) { // 토큰이 없거나 유효하지 않은 경우 처리
                 return UserResponse.builder()
@@ -168,7 +194,7 @@ public class FriendController {
     //친구 삭제
     @DeleteMapping("/delete")
     @Operation(summary = "친구 삭제", description = "친구 삭제 API")
-    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody @Valid String name) {
+    public Map<String, Object> delete(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("name") String name) {
 
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             Map<String, Object> invalidTokenResponse = new HashMap<>();

@@ -18,10 +18,12 @@ import java.util.List;
 public class FriendService {
     private FriendJpaRepository friendJpaRepository;
     private UserRepository userRepository;
+    //private FriendNameRepository friendNameRepository;
     @Transactional
     public Long add(Friend friend) {
         findMem(friend);
         friendJpaRepository.save(friend);
+        //addName(friend);
         return friend.getId();
     }
 
@@ -97,4 +99,17 @@ public class FriendService {
             return 1;
         }return 0;
     }
+
+//    @Transactional
+//    public void addName(Friend friend) {
+//        User me = userRepository.findUserEntityByUserId(friend.getUserId());
+//        User per = userRepository.findUserEntityByUserId(friend.getUserId2());
+//
+//        System.out.println("myname - " + me.getName() + ", yourname - " + per.getName());
+//        FriendName fr = new FriendName();
+//        fr.setUserName(me.getName());
+//        fr.setFriendName(per.getName());
+//
+//        friendNameRepository.save(fr);
+//    }
 }
