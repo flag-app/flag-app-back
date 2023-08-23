@@ -38,14 +38,14 @@ public class FriendController {
             if (token == null || !jwtTokenProvider.validateToken(token)) {
                 return new BaseResponse<>(INVALID_AUTHORIZATION_CODE);
             }
-
+            System.out.println("name - " + name.trim() + ",");
             String email = jwtTokenProvider.getUserPk(token);
             User user = userRepository.findUserByEmail(email);
-            boolean exist = checkUser(token, name);
+            boolean exist = checkUser(token, name.trim());
 
             UserResponse users = null;
             try {
-                users = userService.findListByName(name);
+                users = userService.findListByName(name.trim());
             } catch (NullPointerException e) {
                 return new BaseResponse<>(NICKNAME_NOT_EXISTS);
             }
