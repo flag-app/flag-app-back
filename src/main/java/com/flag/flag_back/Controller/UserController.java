@@ -174,7 +174,7 @@ public class UserController {
     public BaseResponse<String> checkExistName(@RequestParam("name")  String name) {
         try {
             System.out.println("name - " + name);
-            // 이름을 이용하여 이메일 찾기
+            // 이름을 이용하여 이메일 찾기 
             User user = userRepository.findUserByName(name);
             //System.out.println("user - " + user.toString());
             if (user != null) {
